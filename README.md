@@ -50,17 +50,28 @@ npm.cmd run session:001
 
 This writes the cue manifest and estimated seven-act scenario to `production/session-001`. Import the scenario JSON through **Import scenario or audio** to inspect the production layout. The scripted Russian line includes its original Cyrillic and katakana pronunciation. The other cues have empty Russian and pronunciation fields because the source contains no translations for those lines.
 
-For production narration, use an approved Microsoft Foundry Tools Speech resource. Set `WISEMAN_SPEECH_REGION` and `WISEMAN_SPEECH_KEY` in your environment using your usual secret-handling method. Once usage charges are approved:
+For production narration, sign in to Azure CLI with Microsoft Entra ID in the resource tenant. At the Azure OpenAI resource scope, give the signed-in identity the **Cognitive Services OpenAI User** role. Set the resource URL and deployment name, then run the one-request connection test:
+
+```powershell
+az login --tenant <tenant-id>
+$env:WISEMAN_OPENAI_ENDPOINT = 'https://wiseman-tts-project-resource.openai.azure.com'
+$env:WISEMAN_OPENAI_DEPLOYMENT = 'gpt-4o-mini-tts'
+npm.cmd run session:001 -- smoke
+```
+
+The CLI obtains a bearer token for `https://cognitiveservices.azure.com/.default`. The connection test writes `production/session-001/foundry-smoke.wav`. If Azure CLI fails before sending the request, check sign-in and access to its profile directory. For a 401, check the resource tenant and token audience. For a 403, check the resource-level role and network restrictions.
+
+After approving the batch charges:
 
 ```powershell
 npm.cmd run session:001 -- synthesize production/session-001 --approve-paid-tts
 ```
 
-The generator submits the four US English voice assignments and saves WAVs by cue ID. ROOT produces no request or audio asset. Existing WAV files are reused, so use a clean directory if the source or voices change. If you already have the WAVs, put them in `production/session-001/audio` and run `npm.cmd run session:001 -- measure` to rebuild timings from their measured lengths. Each audio cue receives its entire duration. An act that exceeds its allotted time moves subsequent act starts accordingly.
+The generator requests alloy for ORACLE, echo for GHOST, ash for ZERO, and coral for SPECTER, with American English delivery instructions. It saves WAVs by cue ID in `audio-foundry`, then rebuilds timings using the measured lengths. ROOT produces no request or audio asset. Existing WAVs in that directory are reused, so use a clean output directory if the source, voices, or deployment changes. For external WAVs, place them in the `audio` subdirectory and run `npm.cmd run session:001 -- measure`. Each audio cue receives its entire duration. An act that exceeds its allotted time moves subsequent act starts accordingly.
 
 ```powershell
 npm.cmd run build
-npm.cmd run export:preview -- session-001.mp4 production/session-001/audio production/session-001/scenario.json --full --fps=60
+npm.cmd run export:preview -- session-001.mp4 production/session-001/audio-foundry production/session-001/scenario.json --full --fps=60
 ```
 
 The full exporter captures each frame at 1920×1080. Use `--fps=30` if render time is impractical at 60 fps. A 7:45 runtime needs 27,900 captures at 60 fps. Playback and export use the same source events and clip IDs.

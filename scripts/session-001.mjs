@@ -1,14 +1,9 @@
 import { mkdir, readFile, writeFile, rename } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
+import { createFoundryTts, voiceFor } from './foundry-tts.mjs'
 
 const speakers = ['ORACLE', 'GHOST', 'ZERO', 'SPECTER', 'ROOT']
-const voices = {
-  ORACLE: 'en-US-JennyNeural',
-  GHOST: 'en-US-GuyNeural',
-  ZERO: 'en-US-DavisNeural',
-  SPECTER: 'en-US-AriaNeural',
-}
 const marks = [0, 65000, 140000, 215000, 280000, 370000, 435000, 465000]
 const acts = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII']
 
@@ -20,7 +15,7 @@ export function readCues(source) {
     const order = cues.length + 1
     const id = `S001-U${String(order).padStart(3, '0')}`
     cues.push({ id, order, act, speaker, en, ru, jaPronunciation, speaking: true,
-      audioAssetId: speaker === 'ROOT' ? null : id, voice: voices[speaker] ?? null })
+      audioAssetId: speaker === 'ROOT' ? null : id, voice: voiceFor(speaker) })
   }
   const lines = source.replace(/\r/g, '').split('\n')
   for (let index = 0; index < lines.length; index++) {
@@ -124,25 +119,27 @@ export function plan(cues, measured = new Map()) {
     durationMs, participants: speakers, events } }
 }
 
-function ssml(cue) {
-  const text = cue.en.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
-  return `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="en-US"><voice name="${cue.voice}">${text}</voice></speak>`
-}
-
 async function run() {
   const [mode = 'estimate', directory = 'production/session-001'] = process.argv.slice(2)
-  if (!['estimate', 'measure', 'synthesize'].includes(mode)) throw new Error('Use estimate, measure, or synthesize.')
+  if (!['estimate', 'measure', 'smoke', 'synthesize'].includes(mode)) {
+    throw new Error('Use estimate, measure, smoke, or synthesize.')
+  }
   const output = resolve(directory)
-  const audio = join(output, 'audio')
+  const audio = join(output, mode === 'synthesize' ? 'audio-foundry' : 'audio')
+  if (mode === 'smoke') {
+    const wav = await createFoundryTts()('ORACLE', 'This is a short audio connection test.')
+    const duration = wavDurationMs(wav)
+    await mkdir(output, { recursive: true })
+    await writeFile(join(output, 'foundry-smoke.wav'), wav)
+    console.log(`Foundry connection verified. WAV duration: ${duration} ms.`)
+    return
+  }
   const source = await readFile(new URL('../docs/SCRIPT_SESSION_001.md', import.meta.url), 'utf8')
   const cues = readCues(source)
   const measured = new Map()
   if (mode === 'synthesize') {
-    const { WISEMAN_SPEECH_REGION: region, WISEMAN_SPEECH_KEY: key } = process.env
-    if (!region || !/^[a-z0-9]+$/.test(region) || !key) {
-      throw new Error('Set WISEMAN_SPEECH_REGION and WISEMAN_SPEECH_KEY for an approved Speech resource.')
-    }
-    if (!process.argv.includes('--approve-paid-tts')) throw new Error('Pass --approve-paid-tts after confirming Speech charges.')
+    if (!process.argv.includes('--approve-paid-tts')) throw new Error('Pass --approve-paid-tts after confirming Foundry TTS charges.')
+    const synthesize = createFoundryTts()
     await mkdir(audio, { recursive: true })
     for (const cue of cues.filter(cue => cue.audioAssetId)) {
       const path = join(audio, `${cue.audioAssetId}.wav`)
@@ -152,14 +149,9 @@ async function run() {
       } catch (error) {
         if (error.code !== 'ENOENT') throw error
       }
-      const response = await fetch(`https://${region}.tts.speech.microsoft.com/cognitiveservices/v1`, {
-        method: 'POST',
-        headers: { 'Ocp-Apim-Subscription-Key': key, 'Content-Type': 'application/ssml+xml',
-          'X-Microsoft-OutputFormat': 'riff-24khz-16bit-mono-pcm', 'User-Agent': 'WISEMAN' },
-        body: ssml(cue), signal: AbortSignal.timeout(60000),
+      const wav = await synthesize(cue.speaker, cue.en).catch(error => {
+        throw new Error(`${cue.id}: ${error.message}`, { cause: error })
       })
-      if (!response.ok) throw new Error(`Speech request failed for ${cue.id}: HTTP ${response.status}`)
-      const wav = Buffer.from(await response.arrayBuffer())
       wavDurationMs(wav)
       await writeFile(path + '.tmp', wav)
       await rename(path + '.tmp', path)
