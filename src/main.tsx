@@ -4,10 +4,11 @@ import { scenario } from './timeline'
 import { waveformBars } from './waveform'
 import './style.css'
 
-type IconName = 'mic' | 'phone' | 'settings'
+type IconName = 'lock' | 'mic' | 'phone' | 'settings'
 
 function Icon({ name }: { name: IconName }) {
   const paths: Record<IconName, React.ReactNode> = {
+    lock: <><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 1 1 8 0v3m-4 4v3"/></>,
     mic: <><rect x="9" y="2" width="6" height="13" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2m-7 9v3m-3 0h6"/></>,
     phone: <path d="M3 14a14 14 0 0 1 18 0l-2 4-4-2v-3a10 10 0 0 0-6 0v3l-4 2z"/>,
     settings: <><path d="M4 6h16M4 12h16M4 18h16"/><path d="M8 4v4m8 2v4m-6 2v4"/></>,
@@ -29,7 +30,7 @@ function Participant({ participant }: { participant: Frame['participants'][numbe
     <Avatar />
     <div className="participant-details">
       <h2>{name}</h2>
-      {caption && <p className="caption">
+      {caption && <p className="caption" tabIndex={0}>
         <span lang="en">{caption.en}</span>
         {caption.ru && <span className="caption-secondary" lang="ru">{caption.ru}</span>}
         {caption.jaPronunciation && <span className="caption-secondary" lang="ja">{caption.jaPronunciation}</span>}
@@ -51,9 +52,15 @@ function Conference({ frame, disconnect }: { frame: Frame; disconnect: () => voi
       <div className="clock"><time dateTime={frame.utc}>{frame.utc.slice(11, 19)}</time> <span>UTC</span></div>
       <div className={frame.ended ? 'connection disconnected' : 'connection'}><i />{frame.ended ? 'DISCONNECTED' : 'CONNECTED'}</div>
     </header>
-    <ul className="participants" aria-label="Conference participants">
-      {frame.participants.map(participant => <Participant key={participant.name} participant={participant}/>)}
-    </ul>
+    <section className="session" aria-labelledby="session-title">
+      <div className="session-heading">
+        <h2 id="session-title"><Icon name="lock"/> PRIVATE SESSION</h2>
+        <p>Encrypted voice conference · {frame.participants.length} participants</p>
+      </div>
+      <ul className="participants" aria-label="Conference participants">
+        {frame.participants.map(participant => <Participant key={participant.name} participant={participant}/>)}
+      </ul>
+    </section>
     <footer className="bottom">
       <div className="session-id">SESSION ID <strong>{scenario.id}</strong></div>
       <div className="call-controls">
