@@ -1,0 +1,55 @@
+import { describe, expect, it, vi } from 'vitest'
+import { analyzeAudio, audioWaveform, importAudio, scheduleAudio } from './scenario-audio'
+import { scenario, type Scenario } from './timeline'
+
+const samples = new Float32Array(20000)
+samples[499] = -0.5
+const buffer = {
+  sampleRate: 1000,
+  numberOfChannels: 1,
+  length: samples.length,
+  duration: 20,
+  getChannelData: () => samples,
+} as unknown as AudioBuffer
+
+describe('scenario audio', () => {
+  it('uses decoded sample peaks to draw deterministic waveform bars', () => {
+    const asset = analyzeAudio(buffer)
+    expect(audioWaveform(asset, 0).every(height => height === 2)).toBe(true)
+    expect(audioWaveform(asset, 499).at(-1)).toBe(20)
+    expect(audioWaveform(asset, 1000).every(height => height === 2)).toBe(true)
+  })
+
+  it('ignores ROOT files before decoding and rejects duplicate cues', async () => {
+    const decodeAudioData = vi.fn().mockResolvedValue(buffer)
+    const context = { decodeAudioData } as unknown as BaseAudioContext
+    const file = (name: string) => ({ name, arrayBuffer: async () => new ArrayBuffer(1) }) as File
+    const assets = await importAudio(context, scenario, [file('ROOT.wav'), file('ORACLE-0.wav')])
+    expect([...assets.keys()]).toEqual(['ORACLE-0'])
+    expect(decodeAudioData).toHaveBeenCalledTimes(1)
+    await expect(importAudio(context, scenario, [file('ORACLE.wav'), file('oracle.mp3')])).rejects.toThrow('Duplicate')
+  })
+
+  it('schedules all four speakers on the same clock, seeks into clips, and keeps ROOT silent', () => {
+    const withSpecter: Scenario = {
+      ...scenario,
+      events: scenario.events.flatMap<Scenario['events'][number]>(event => event.type === 'participant_speaking_ended' &&
+        event.participant === 'ORACLE' ? [
+          { ...event, atMs: 6000 },
+          { type: 'participant_speaking_started', participant: 'SPECTER', atMs: 6000 },
+          { type: 'participant_speaking_ended', participant: 'SPECTER', atMs: 12000 },
+        ] : [event]).sort((a, b) => a.atMs - b.atMs),
+    }
+    const asset = analyzeAudio(buffer)
+    const assets = new Map(withSpecter.participants.map(name => [name, asset]))
+    const starts = vi.fn()
+    const stop = vi.fn()
+    const context = {
+      createBufferSource: () => ({ start: starts, stop, connect: vi.fn(), disconnect: vi.fn() }),
+    } as unknown as BaseAudioContext
+    const cleanup = scheduleAudio(context, withSpecter, assets, 3000, 30000, 10)
+    expect(starts.mock.calls).toEqual([[10, 3, 3], [13, 0, 6], [19, 0, 6], [25, 0, 5]])
+    cleanup()
+    expect(stop).toHaveBeenCalledTimes(4)
+  })
+})

@@ -86,15 +86,16 @@ h2 { margin: 0; font: 600 clamp(13px, 1.04cqw, 20px) var(--mono); letter-spacing
   align-content: start;
   gap: .15em;
   margin: .28em 0 0;
-  max-block-size: clamp(48px, 3.6cqw, 70px);
-  overflow: auto;
-  scrollbar-width: thin;
   font-size: clamp(12px, .94cqw, 18px);
   line-height: 1.25;
   overflow-wrap: anywhere;
   line-break: strict;
 }
-.caption:focus-visible { outline: 1px solid var(--green); outline-offset: 2px; }
+.caption > span { max-block-size: 3.75em; overflow: auto; scrollbar-width: thin; }
+.caption:has(> :nth-child(2)) > span { max-block-size: 2.5em; }
+.caption > span.caption-secondary { max-block-size: 1.25em; }
+.caption:has(> :nth-child(3)) > span { max-block-size: 1.25em; }
+.caption > span:focus-visible { outline: 1px solid var(--green); outline-offset: 2px; }
 .caption-secondary { color: var(--muted); font-size: .87em; }
 .participant-signal {
   display: grid;

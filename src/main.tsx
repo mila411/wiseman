@@ -1,6 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { createRoot } from 'react-dom/client'
+import { flushSync } from 'react-dom'
 import { captureSize, frameAt } from './export'
-import { scenario } from './timeline'
+import { scenario as defaultScenario, type Scenario } from './timeline'
+import { importAudio, scheduleAudio, type AudioAssets } from './scenario-audio'
+import { validateScenario } from './import-scenario'
 import { waveformBars } from './waveform'
 import './style.css'
 
@@ -30,10 +34,10 @@ function Participant({ participant }: { participant: Frame['participants'][numbe
     <Avatar />
     <div className="participant-details">
       <h2>{name}</h2>
-      {caption && <p className="caption" tabIndex={0}>
-        <span lang="en">{caption.en}</span>
-        {caption.ru && <span className="caption-secondary" lang="ru">{caption.ru}</span>}
-        {caption.jaPronunciation && <span className="caption-secondary" lang="ja">{caption.jaPronunciation}</span>}
+      {caption && <p className="caption">
+        <span lang="en" tabIndex={0}>{caption.en}</span>
+        {caption.ru && <span className="caption-secondary" lang="ru" tabIndex={0}>{caption.ru}</span>}
+        {caption.jaPronunciation && <span className="caption-secondary" lang="ja" tabIndex={0}>{caption.jaPronunciation}</span>}
       </p>}
     </div>
     <div className="participant-signal">
@@ -45,7 +49,7 @@ function Participant({ participant }: { participant: Frame['participants'][numbe
   </li>
 }
 
-function Conference({ frame, disconnect }: { frame: Frame; disconnect: () => void }) {
+function Conference({ frame, sessionId, disconnect }: { frame: Frame; sessionId: string; disconnect: () => void }) {
   return <main className="conference" style={{ aspectRatio: `${captureSize.width} / ${captureSize.height}` }}>
     <header className="top">
       <h1>WISEMAN</h1>
@@ -62,7 +66,7 @@ function Conference({ frame, disconnect }: { frame: Frame; disconnect: () => voi
       </ul>
     </section>
     <footer className="bottom">
-      <div className="session-id">SESSION ID <strong>{scenario.id}</strong></div>
+      <div className="session-id">SESSION ID <strong>{sessionId}</strong></div>
       <div className="call-controls">
         <button className="utility" type="button" disabled aria-label="Microphone unavailable in prototype" title="Microphone unavailable in prototype"><Icon name="mic"/></button>
         <button className="hangup" type="button" disabled={frame.ended} onClick={disconnect}><Icon name="phone"/> Disconnect</button>
@@ -73,52 +77,142 @@ function Conference({ frame, disconnect }: { frame: Frame; disconnect: () => voi
 }
 
 function App() {
+  const [scenario, setScenario] = useState(defaultScenario)
   const [time, setTime] = useState(0)
   const [playing, setPlaying] = useState(false)
+  const [playbackVersion, setPlaybackVersion] = useState(0)
   const [disconnectAt, setDisconnectAt] = useState<number>()
-  const frame = frameAt(scenario, time, disconnectAt)
+  const [assets, setAssets] = useState<AudioAssets>(new Map())
+  const [importing, setImporting] = useState(false)
+  const [message, setMessage] = useState('')
+  const audioContext = useRef<AudioContext | null>(null)
+  const position = useRef(0)
+  const playRequest = useRef(0)
+  const frame = frameAt(scenario, time, disconnectAt, assets)
   const duration = disconnectAt ?? scenario.durationMs
   const running = playing && time < duration
 
   useEffect(() => {
     if (!running) return
+    const start = position.current
+    const context = assets.size ? audioContext.current : null
+    const now = context ? () => context.currentTime : () => performance.now() / 1000
+    const anchor = now()
+    const stop = context && scheduleAudio(context, scenario, assets, start, duration, anchor)
     let request: number
-    let last: number | undefined
-    const tick = (timestamp: number) => {
-      const delta = last === undefined ? 0 : timestamp - last
-      last = timestamp
-      setTime(previous => Math.min(duration, previous + delta))
+    const tick = () => {
+      position.current = Math.min(duration, start + (now() - anchor) * 1000)
+      setTime(position.current)
       request = requestAnimationFrame(tick)
     }
     request = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(request)
-  }, [duration, running])
+    return () => {
+      cancelAnimationFrame(request)
+      stop?.()
+    }
+  }, [assets, duration, playbackVersion, running, scenario])
 
-  function restart() {
-    setDisconnectAt(undefined)
-    setTime(0)
+  async function play(restart = false) {
+    const request = ++playRequest.current
+    if (assets.size) {
+      try {
+        await audioContext.current?.resume()
+      } catch {
+        setMessage('Could not start audio playback.')
+        return
+      }
+    }
+    if (request !== playRequest.current) return
+    if (restart) {
+      setDisconnectAt(undefined)
+      seek(0)
+      setPlaybackVersion(previous => previous + 1)
+    }
     setPlaying(true)
   }
 
-  function disconnect() {
+  function pause() {
+    playRequest.current++
     setPlaying(false)
+  }
+
+  function seek(value: number) {
+    position.current = value
+    setTime(value)
+  }
+
+  async function load(files: File[]) {
+    pause()
+    setImporting(true)
+    try {
+      const scripts = files.filter(file => /\.json$/i.test(file.name))
+      if (scripts.length > 1) throw new Error('Select one scenario JSON file at a time.')
+      const next = scripts.length ? validateScenario(JSON.parse(await scripts[0].text())) : scenario
+      const clips = files.filter(file => !scripts.includes(file))
+      if (clips.length) audioContext.current ??= new AudioContext()
+      const imported = clips.length ? await importAudio(audioContext.current!, next, clips) : new Map()
+      if (scripts.length) {
+        setScenario(next)
+        setDisconnectAt(undefined)
+        seek(0)
+      }
+      setAssets(imported)
+      setMessage(`Loaded ${imported.size} audio clips. ROOT is silent.`)
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'Could not import audio.')
+    } finally {
+      setImporting(false)
+    }
+  }
+
+  function disconnect() {
+    pause()
     setDisconnectAt(time)
-    setTime(time)
+    seek(time)
   }
 
   return <>
-    <Conference frame={frame} disconnect={disconnect}/>
+    <Conference frame={frame} sessionId={scenario.id} disconnect={disconnect}/>
     <section className="playback" aria-label="Prototype playback">
-      <button type="button" disabled={time >= duration} onClick={() => setPlaying(!running)}>{running ? 'Pause' : 'Play'}</button>
-      <button type="button" onClick={restart}>Restart</button>
+      <button type="button" disabled={importing || time >= duration} onClick={() => running ? pause() : void play()}>{running ? 'Pause' : 'Play'}</button>
+      <button type="button" disabled={importing} onClick={() => void play(true)}>Restart</button>
       <input aria-label="Seek playback" type="range" min="0" max={duration} step="any" value={time} onChange={event => {
-        setPlaying(false)
-        setTime(Number(event.target.value))
+        pause()
+        seek(Number(event.target.value))
       }}/>
       <output>{(time / 1000).toFixed(2)} s / {(duration / 1000).toFixed(2)} s</output>
+    </section>
+    <section className="playback" aria-label="Scenario audio">
+      <label>Import scenario or audio <input type="file" accept="audio/*,.wav,.mp3,.m4a,.ogg,.json" multiple disabled={importing} onChange={event => {
+        const files = Array.from(event.currentTarget.files ?? [])
+        event.currentTarget.value = ''
+        if (files.length) void load(files)
+      }}/></label>
+      <span role="status">{importing ? 'Importing audio…' : message}</span>
     </section>
   </>
 }
 
-import { createRoot } from 'react-dom/client'
-createRoot(document.getElementById('root')!).render(<App />)
+const root = createRoot(document.getElementById('root')!)
+if (new URLSearchParams(location.search).has('capture')) {
+  let scenario = defaultScenario
+  let assets: AudioAssets = new Map()
+  const draw = (ms: number) => flushSync(() => root.render(
+    <Conference frame={frameAt(scenario, ms, undefined, assets)} sessionId={scenario.id} disconnect={() => {}}/>,
+  ))
+  Object.assign(window, {
+    wisemanCapture: {
+      draw,
+      async load(files: File[], source?: Scenario) {
+        const context = new OfflineAudioContext(1, 30 * 48000, 48000)
+        scenario = source ? validateScenario(source) : defaultScenario
+        assets = await importAudio(context, scenario, files)
+        scheduleAudio(context, scenario, assets, 0, 30000, 0)
+        return (await context.startRendering()).getChannelData(0)
+      },
+    },
+  })
+  draw(0)
+} else {
+  root.render(<App />)
+}
