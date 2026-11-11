@@ -49,18 +49,31 @@ function Participant({ participant }: { participant: Frame['participants'][numbe
   </li>
 }
 
-function Conference({ frame, sessionId, disconnect }: { frame: Frame; sessionId: string; disconnect: () => void }) {
-  return <main className="conference" style={{ aspectRatio: `${captureSize.width} / ${captureSize.height}` }}>
+function Conference({ frame, sessionId, presentation, disconnect }: {
+  frame: Frame; sessionId: string; presentation?: Scenario['presentation']; disconnect: () => void
+}) {
+  const production = presentation === 'session-001'
+  const privateSession = <h2 id="session-title"><Icon name="lock"/> PRIVATE SESSION</h2>
+  const summary = <p>Encrypted voice conference · {frame.participants.length} participants</p>
+  const connected = frame.participants.some(participant => participant.connected)
+  return <main className={`conference${production ? ' research-session' : ''}${production && frame.timeMs < 900 ? ' opening' : ''}`}
+    style={{ aspectRatio: `${captureSize.width} / ${captureSize.height}` }}>
     <header className="top">
-      <h1>WISEMAN</h1>
+      <div className="call-heading">
+        {production && privateSession}
+        <h1>WISEMAN</h1>
+        {production && summary}
+      </div>
       <div className="clock"><time dateTime={frame.utc}>{frame.utc.slice(11, 19)}</time> <span>UTC</span></div>
-      <div className={frame.ended ? 'connection disconnected' : 'connection'}><i />{frame.ended ? 'DISCONNECTED' : 'CONNECTED'}</div>
+      <div className={frame.ended ? 'connection disconnected' : 'connection'}><i />{frame.ended
+        ? 'DISCONNECTED' : production && !connected ? 'CONNECTING' : 'CONNECTED'}
+        {production && connected && <svg className="signal" viewBox="0 0 16 12" aria-hidden="true">
+          <path d="M2 11V9m4 2V7m4 4V4m4 7V1" stroke="currentColor" strokeWidth="1.7" fill="none"/>
+        </svg>}
+      </div>
     </header>
     <section className="session" aria-labelledby="session-title">
-      <div className="session-heading">
-        <h2 id="session-title"><Icon name="lock"/> PRIVATE SESSION</h2>
-        <p>Encrypted voice conference · {frame.participants.length} participants</p>
-      </div>
+      {!production && <div className="session-heading">{privateSession}{summary}</div>}
       <ul className="participants" aria-label="Conference participants">
         {frame.participants.map(participant => <Participant key={participant.name} participant={participant}/>)}
       </ul>
@@ -69,10 +82,14 @@ function Conference({ frame, sessionId, disconnect }: { frame: Frame; sessionId:
       <div className="session-id">SESSION ID <strong>{sessionId}</strong></div>
       <div className="call-controls">
         <button className="utility" type="button" disabled aria-label="Microphone unavailable in prototype" title="Microphone unavailable in prototype"><Icon name="mic"/></button>
-        <button className="hangup" type="button" disabled={frame.ended} onClick={disconnect}><Icon name="phone"/> Disconnect</button>
+        <button className="hangup" type="button" aria-label="Disconnect" disabled={frame.ended} onClick={disconnect}><Icon name="phone"/>{!production && ' Disconnect'}</button>
         <button className="utility" type="button" disabled aria-label="Settings unavailable in prototype" title="Settings unavailable in prototype"><Icon name="settings"/></button>
       </div>
     </footer>
+    {production && frame.ended && <div className="termination">
+      <p>SECURE SESSION TERMINATED</p>
+      <p>END OF TRANSMISSION</p>
+    </div>}
   </main>
 }
 
@@ -95,7 +112,7 @@ function App() {
   useEffect(() => {
     if (!running) return
     const start = position.current
-    const context = assets.size ? audioContext.current : null
+    const context = assets.size || scenario.presentation ? audioContext.current : null
     const now = context ? () => context.currentTime : () => performance.now() / 1000
     const anchor = now()
     const stop = context && scheduleAudio(context, scenario, assets, start, duration, anchor)
@@ -114,9 +131,10 @@ function App() {
 
   async function play(restart = false) {
     const request = ++playRequest.current
-    if (assets.size) {
+    if (assets.size || scenario.presentation) {
       try {
-        await audioContext.current?.resume()
+        audioContext.current ??= new AudioContext()
+        await audioContext.current.resume()
       } catch {
         setMessage('Could not start audio playback.')
         return
@@ -172,7 +190,7 @@ function App() {
   }
 
   return <>
-    <Conference frame={frame} sessionId={scenario.id} disconnect={disconnect}/>
+    <Conference frame={frame} sessionId={scenario.id} presentation={scenario.presentation} disconnect={disconnect}/>
     <section className="playback" aria-label="Prototype playback">
       <button type="button" disabled={importing || time >= duration} onClick={() => running ? pause() : void play()}>{running ? 'Pause' : 'Play'}</button>
       <button type="button" disabled={importing} onClick={() => void play(true)}>Restart</button>
@@ -198,16 +216,16 @@ if (new URLSearchParams(location.search).has('capture')) {
   let scenario = defaultScenario
   let assets: AudioAssets = new Map()
   const draw = (ms: number) => flushSync(() => root.render(
-    <Conference frame={frameAt(scenario, ms, undefined, assets)} sessionId={scenario.id} disconnect={() => {}}/>,
+    <Conference frame={frameAt(scenario, ms, undefined, assets)} sessionId={scenario.id} presentation={scenario.presentation} disconnect={() => {}}/>,
   ))
   Object.assign(window, {
     wisemanCapture: {
       draw,
-      async load(files: File[], source?: Scenario) {
-        const context = new OfflineAudioContext(1, 30 * 48000, 48000)
+      async load(files: File[], source?: Scenario, durationMs = 30000) {
+        const context = new OfflineAudioContext(1, Math.ceil(durationMs * 48), 48000)
         scenario = source ? validateScenario(source) : defaultScenario
         assets = await importAudio(context, scenario, files)
-        scheduleAudio(context, scenario, assets, 0, 30000, 0)
+        scheduleAudio(context, scenario, assets, 0, durationMs, 0)
         return (await context.startRendering()).getChannelData(0)
       },
     },

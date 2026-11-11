@@ -8,9 +8,10 @@ export interface Caption {
 
 type Event = { atMs: number } & (
   | { type: 'session_ended' }
+  | { type: 'participant_speaking_started'; participant: string; audioAssetId?: string }
   | { type: 'caption_started'; participant: string; caption: Caption }
   | {
-      type: 'participant_joined' | 'participant_speaking_started' |
+      type: 'participant_joined' | 'participant_left' |
         'participant_speaking_ended' | 'caption_ended'
       participant: string
     }
@@ -22,6 +23,7 @@ export interface Scenario {
   durationMs: number
   participants: string[]
   events: Event[]
+  presentation?: 'session-001'
 }
 
 export const scenario = data as Scenario
@@ -38,6 +40,11 @@ export function stateAt(scenario: Scenario, playbackMs: number) {
     switch (event.type) {
       case 'participant_joined':
         connected.add(event.participant)
+        break
+      case 'participant_left':
+        connected.delete(event.participant)
+        speaking.delete(event.participant)
+        captions.delete(event.participant)
         break
       case 'participant_speaking_started':
         if (connected.has(event.participant)) speaking.set(event.participant, event.atMs)

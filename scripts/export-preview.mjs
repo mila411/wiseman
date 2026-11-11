@@ -1,15 +1,19 @@
 import { spawn, spawnSync } from 'node:child_process'
 import { once } from 'node:events'
-import { mkdtemp, readFile, readdir, rename, rm, writeFile } from 'node:fs/promises'
+import { mkdtemp, open, readFile, readdir, rename, rm } from 'node:fs/promises'
 import { createServer } from 'node:http'
 import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { setTimeout as delay } from 'node:timers/promises'
 
-const [destination, audioDirectory, scenarioFile] = process.argv.slice(2)
+const args = process.argv.slice(2)
+const [destination, audioDirectory, scenarioFile] = args.filter(arg => !arg.startsWith('--'))
+const full = args.includes('--full')
+const fps = Number(args.find(arg => arg.startsWith('--fps='))?.slice(6) ?? 15)
 if (!destination?.toLowerCase().endsWith('.mp4')) {
-  throw new Error('Usage: npm run export:preview -- preview.mp4 [audio-directory] [scenario.json]')
+  throw new Error('Usage: npm run export:preview -- preview.mp4 [audio-directory] [scenario.json] [--full] [--fps=60]')
 }
+if (![15, 24, 30, 60].includes(fps)) throw new Error('Use 15, 24, 30, or 60 fps.')
 const browserPath = process.env.WISEMAN_BROWSER ?? ({
   win32: 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',
   darwin: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
@@ -22,6 +26,12 @@ if (spawnSync(ffmpeg, ['-version'], { stdio: 'ignore' }).status !== 0) {
 const dist = new URL('../dist/', import.meta.url)
 await readFile(new URL('index.html', dist))
 const scenario = scenarioFile ? JSON.parse(await readFile(scenarioFile, 'utf8')) : null
+if (full && (!Number.isSafeInteger(scenario?.durationMs) || scenario.durationMs <= 0)) {
+  throw new Error('--full requires a scenario JSON file with a positive duration.')
+}
+const durationMs = full ? scenario.durationMs : 30000
+const duration = durationMs / 1000
+const frames = Math.ceil(duration * fps)
 const names = audioDirectory ? await readdir(audioDirectory) : []
 const files = await Promise.all(names.filter(name => /\.(wav|mp3|m4a|ogg|flac|aac|opus)$/i.test(name)).map(async name => ({
   name,
@@ -108,34 +118,40 @@ try {
   for (const { name, data } of files) {
     await evaluate(`window.previewFiles.push(new File([Uint8Array.fromBase64(${JSON.stringify(data)})], ${JSON.stringify(name)}))`)
   }
-  await evaluate(`window.wisemanCapture.load(window.previewFiles, ${JSON.stringify(scenario)})
+  await evaluate(`window.wisemanCapture.load(window.previewFiles, ${JSON.stringify(scenario)}, ${durationMs})
     .then(samples => { window.previewAudio = samples })`)
   const raw = join(scratch, 'audio.f32')
-  const chunks = []
-  for (let offset = 0; offset < 30 * 48000; offset += 48000) {
-    const bytes = await evaluate(`new Uint8Array(window.previewAudio.buffer, ${offset * 4}, 192000).toBase64()`)
-    chunks.push(Buffer.from(bytes, 'base64'))
+  const audioFile = await open(raw, 'w')
+  try {
+    const sampleCount = Math.ceil(durationMs * 48)
+    for (let offset = 0; offset < sampleCount; offset += 48000) {
+      const size = Math.min(sampleCount - offset, 48000) * 4
+      const bytes = await evaluate(`new Uint8Array(window.previewAudio.buffer, ${offset * 4}, ${size}).toBase64()`)
+      await audioFile.writeFile(Buffer.from(bytes, 'base64'))
+    }
+  } finally {
+    await audioFile.close()
   }
-  await writeFile(raw, Buffer.concat(chunks))
 
-  const fps = 15
   const temporaryOutput = join(scratch, 'preview.mp4')
   encoder = spawn(ffmpeg, [
     '-hide_banner', '-loglevel', 'error', '-y',
     '-f', 'image2pipe', '-framerate', String(fps), '-vcodec', 'mjpeg', '-i', 'pipe:0',
     '-f', 'f32le', '-ar', '48000', '-ac', '1', '-i', raw,
     '-c:v', 'libx264', '-preset', 'fast', '-crf', '18', '-pix_fmt', 'yuv420p',
-    '-c:a', 'aac', '-ar', '44100', '-movflags', '+faststart', '-t', '30', temporaryOutput,
+    '-c:a', 'aac', '-ar', '44100', '-movflags', '+faststart', '-t', String(duration), temporaryOutput,
   ], { stdio: ['pipe', 'inherit', 'inherit'], windowsHide: true })
   let encoderError
   const encoded = once(encoder, 'exit').catch(error => { encoderError = error; return [null] })
   encoder.stdin.on('error', error => { encoderError = error })
-  for (let frame = 0; frame < 30 * fps; frame++) {
+  for (let frame = 0; frame < frames; frame++) {
     if (encoderError) throw encoderError
     await evaluate(`window.wisemanCapture.draw(${frame * 1000 / fps})`)
     const { data } = await call('Page.captureScreenshot', { format: 'jpeg', quality: 92 })
     if (!encoder.stdin.write(Buffer.from(data, 'base64'))) await once(encoder.stdin, 'drain')
-    if ((frame + 1) % (5 * fps) === 0) console.log(`Rendered ${(frame + 1) / fps}/30 seconds`)
+    if ((frame + 1) % (5 * fps) === 0 || frame + 1 === frames) {
+      console.log(`Rendered ${Math.min(duration, (frame + 1) / fps)}/${duration} seconds`)
+    }
   }
   encoder.stdin.end()
   const [code] = await encoded

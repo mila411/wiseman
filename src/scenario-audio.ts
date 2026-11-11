@@ -34,20 +34,29 @@ export function audioWaveform(asset: AudioAsset, offsetMs: number) {
 
 export async function importAudio(context: BaseAudioContext, scenario: Scenario, files: readonly File[]) {
   const allowed = new Set(scenario.participants.filter(name => name.toUpperCase() !== 'ROOT').map(name => name.toUpperCase()))
+  const aliases = new Map<string, string[]>()
   for (const event of scenario.events) {
     if (event.type === 'participant_speaking_started' && allowed.has(event.participant.toUpperCase())) {
-      allowed.add(`${event.participant.toUpperCase()}-${event.atMs}`)
+      const cueKey = `${event.participant.toUpperCase()}-${event.atMs}`
+      allowed.add(cueKey)
+      if (event.audioAssetId) {
+        const keys = aliases.get(event.audioAssetId) ?? []
+        keys.push(cueKey)
+        aliases.set(event.audioAssetId, keys)
+      }
     }
   }
   const assets = new Map<string, AudioAsset>()
   for (const file of files) {
     const key = file.name.replace(/\.[^.]+$/, '').toUpperCase()
     if (key === 'ROOT' || key.startsWith('ROOT-')) continue
-    if (!allowed.has(key)) throw new Error(`Unknown audio cue: ${file.name}`)
-    if (assets.has(key)) throw new Error(`Duplicate audio cue: ${file.name}`)
+    const cueKeys = aliases.get(key) ?? [key]
+    if (!cueKeys.every(cueKey => allowed.has(cueKey))) throw new Error(`Unknown audio cue: ${file.name}`)
+    if (cueKeys.some(cueKey => assets.has(cueKey))) throw new Error(`Duplicate audio cue: ${file.name}`)
     try {
       const buffer = await context.decodeAudioData(await file.arrayBuffer())
-      assets.set(key, analyzeAudio(buffer))
+      const asset = analyzeAudio(buffer)
+      for (const cueKey of cueKeys) assets.set(cueKey, asset)
     } catch {
       throw new Error(`Could not decode ${file.name}`)
     }
@@ -69,10 +78,28 @@ export function scheduleAudio(
     ...scenario.events.flatMap(event =>
       event.atMs > fromMs && event.atMs < end &&
       (event.type === 'participant_speaking_started' || event.type === 'participant_speaking_ended' ||
-        event.type === 'session_ended' || event.type === 'participant_joined') ? [event.atMs] : []),
+        event.type === 'session_ended' || event.type === 'participant_joined' ||
+        event.type === 'participant_left') ? [event.atMs] : []),
     end,
   ])].sort((a, b) => a - b)
   const sources: AudioBufferSourceNode[] = []
+  const connection = scenario.presentation === 'session-001'
+    ? scenario.events.find(event => event.type === 'participant_joined')?.atMs
+    : undefined
+  let chime: OscillatorNode | undefined
+  let volume: GainNode | undefined
+  if (connection !== undefined && connection >= fromMs && connection < end) {
+    const at = anchor + (connection - fromMs) / 1000
+    chime = context.createOscillator()
+    volume = context.createGain()
+    chime.frequency.value = 660
+    volume.gain.setValueAtTime(0, at)
+    volume.gain.linearRampToValueAtTime(.045, at + .025)
+    volume.gain.linearRampToValueAtTime(0, at + .15)
+    chime.connect(volume).connect(context.destination)
+    chime.start(at)
+    chime.stop(at + .16)
+  }
   const intervals = new Map<string, { asset: AudioAsset; from: number; to: number; start: number }>()
   for (let index = 0; index < boundaries.length - 1; index++) {
     const from = boundaries[index]
@@ -97,8 +124,13 @@ export function scheduleAudio(
     source.start(anchor + (from - fromMs) / 1000, offset, length)
     sources.push(source)
   }
-  return () => sources.forEach(source => {
-    source.stop()
-    source.disconnect()
-  })
+  return () => {
+    chime?.stop()
+    chime?.disconnect()
+    volume?.disconnect()
+    sources.forEach(source => {
+      source.stop()
+      source.disconnect()
+    })
+  }
 }
