@@ -111,3 +111,8 @@ h2 { margin: 0; font: 600 clamp(13px, 1.04cqw, 20px) var(--mono); letter-spacing
   .participant-status { grid-column: 1; }
   .waveform { width: 55px; }
 }
+
+/* Keep the playback panel scrollable without reserving a gutter in the capture. */
+@media (width: 1920px) and (height: 1080px) {
+  html { scrollbar-width: none; }
+}
