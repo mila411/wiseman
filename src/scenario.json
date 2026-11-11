@@ -1,0 +1,32 @@
+{
+  "id": "WSM-04A9",
+  "utcStart": "2026-02-18T22:14:06Z",
+  "durationMs": 30000,
+  "participants": ["ORACLE", "GHOST", "ZERO", "SPECTER", "ROOT"],
+  "events": [
+    { "atMs": 0, "type": "participant_joined", "participant": "ORACLE" },
+    { "atMs": 0, "type": "participant_joined", "participant": "GHOST" },
+    { "atMs": 0, "type": "participant_joined", "participant": "ZERO" },
+    { "atMs": 0, "type": "participant_joined", "participant": "SPECTER" },
+    { "atMs": 0, "type": "participant_joined", "participant": "ROOT" },
+    { "atMs": 0, "type": "participant_speaking_started", "participant": "ORACLE" },
+    { "atMs": 750, "type": "caption_started", "participant": "ORACLE", "caption": { "en": "Everyone is here. Let's begin.", "ru": "\u0412\u0441\u0435 \u043d\u0430 \u0441\u0432\u044f\u0437\u0438. \u041d\u0430\u0447\u043d\u0451\u043c." } },
+    { "atMs": 5800, "type": "caption_ended", "participant": "ORACLE" },
+    { "atMs": 6500, "type": "caption_started", "participant": "ORACLE", "caption": { "en": "Ghost, give us the status." } },
+    { "atMs": 11200, "type": "caption_ended", "participant": "ORACLE" },
+    { "atMs": 12000, "type": "participant_speaking_ended", "participant": "ORACLE" },
+    { "atMs": 12000, "type": "participant_speaking_started", "participant": "GHOST" },
+    { "atMs": 12500, "type": "caption_started", "participant": "GHOST", "caption": { "en": "I have the revised schedule." } },
+    { "atMs": 17400, "type": "caption_ended", "participant": "GHOST" },
+    { "atMs": 18000, "type": "participant_speaking_ended", "participant": "GHOST" },
+    { "atMs": 18000, "type": "participant_speaking_started", "participant": "ZERO" },
+    { "atMs": 18250, "type": "caption_started", "participant": "ZERO", "caption": { "en": "Confirmed.", "jaPronunciation": "\u30b3\u30f3\u30d5\u30a1\u30fc\u30e0\u30c9" } },
+    { "atMs": 22250, "type": "caption_ended", "participant": "ZERO" },
+    { "atMs": 23000, "type": "participant_speaking_ended", "participant": "ZERO" },
+    { "atMs": 23000, "type": "participant_speaking_started", "participant": "ROOT" },
+    { "atMs": 23000, "type": "caption_started", "participant": "ROOT", "caption": { "en": "Agreed. We'll meet again at the same time." } },
+    { "atMs": 29500, "type": "caption_ended", "participant": "ROOT" },
+    { "atMs": 30000, "type": "participant_speaking_ended", "participant": "ROOT" },
+    { "atMs": 30000, "type": "session_ended" }
+  ]
+}
