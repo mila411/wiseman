@@ -4,7 +4,7 @@ WISEMAN is a fictional voice-conference simulation. The local app opens Research
 
 ## macOS setup
 
-Install Node.js 22 or later and run these commands from the repository root:
+Install Node.js 24 and run these commands from the repository root:
 
 ```sh
 npm ci
@@ -15,7 +15,7 @@ Open the URL Vite prints. The repository includes the scenario and WAV files nee
 
 ## Windows setup
 
-Install Node.js 22 or later and open PowerShell in the project directory.
+Install Node.js 24 and open PowerShell in the project directory.
 
 ```powershell
 npm.cmd ci --cache .npm-cache
