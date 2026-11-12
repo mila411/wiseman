@@ -13,17 +13,15 @@
 | --- | --- |
 | `docs/SCRIPT_SESSION_001.md` | 正式脚本 ACT I〜VII の原文 |
 | `docs/SESSION_001_FACT_CHECK.md` | Apple 公表内容との照合と未確認事項 |
-| `src/main.tsx`、`src/style.css` | React の会議画面、素材の取り込み、再生操作、本編表示、書き出し用画面 |
+| `src/main.tsx`、`src/style.css` | React の会議画面、素材の取り込み、再生操作、本編表示 |
 | `src/timeline.ts`、`src/scenario.json`、`src/import-scenario.ts` | 時刻別の状態計算、起動時の30秒デモ、取り込むシナリオの検証 |
-| `src/export.ts`、`src/scenario-audio.ts`、`src/waveform.ts`、`src/audio.ts` | 画面フレーム、音声取り込み・再生スケジュール、実音声・演出用の波形、既存音声キューの解決 |
+| `src/session-frame.ts`、`src/scenario-audio.ts`、`src/waveform.ts`、`src/audio.ts` | 画面フレーム、音声取り込み・再生スケジュール、実音声・演出用の波形、既存音声キューの解決 |
 | `scripts/session-001.mjs` | 脚本をキューに変換し、仮尺または WAV 実測尺でシナリオを生成 |
 | `scripts/foundry-tts.mjs` | Azure CLI の Entra ID トークンで Azure OpenAI TTS を呼び出す |
-| `scripts/export-preview.mjs` | ヘッドレスブラウザーで描画し、Web Audio のミックスと画像を FFmpeg で MP4 にする |
 | `package.json`、`package-lock.json`、`tsconfig.json`、`index.html` | npm コマンド、依存の固定、TypeScript 設定、Web アプリの入口 |
 
 - Node.js 22 以上が README の要件。今回の検証環境は Node.js 26.13.0。主な依存は React、Vite、TypeScript、Vitest。
-- MP4 書き出しには、ヘッドレス起動可能な Chromium 系ブラウザーと、H.264（`libx264`）・AAC 対応の FFmpeg が必要。既定は Windows が Edge、macOS が Chrome、Linux が Chromium。パスは `WISEMAN_BROWSER` と `FFMPEG` で指定できる。
-- Foundry と Azure CLI は新規音声の生成に使用する。既存 WAV の取り込み・再生・書き出しはローカルで動作する。
+- Foundry と Azure CLI は新規音声の生成に使用する。既存 WAV の取り込み・再生はローカルで動作する。
 
 ## ローカル素材
 
@@ -47,7 +45,7 @@ SHA-256
 
 別環境への引き継ぎでは、同じブランチのソースと `production/session-001` を揃える。音声アセット ID とファイル名は対応を維持する。
 
-## 起動と再書き出し
+## 起動
 
 Windows PowerShell でリポジトリのルートから実行する。
 
@@ -56,15 +54,13 @@ npm.cmd ci
 npm.cmd run dev
 ```
 
-表示されたローカル URL を開く。本編を試す場合は会議画面の下にある **Import scenario or audio** から `scenario.json` と `audio-foundry` 内の WAV 76本を一緒に選び、Play を押す。取り込みのたびに音声セットが入れ替わる。
+表示されたローカル URL を開くと、本編のシナリオと WAV が読み込まれる。macOS のシェルでは `npm.cmd` を `npm` に置き換える。
 
 ```powershell
 npm.cmd test
 npm.cmd run build
-npm.cmd run export:preview -- production/session-001/wiseman-session-001-review.mp4 production/session-001/audio-foundry production/session-001/scenario.json --full --fps=60
 ```
 
-出力名は既存 MP4 と分けている。処理時間の都合でフレームレートを下げる場合は `--fps=30`。macOS のシェルでは `npm.cmd` を `npm` に置き換える。MacBook 実機のブラウザー起動・書き出しは未確認。
 
 ### 音声を変更するとき
 
@@ -77,7 +73,7 @@ npm.cmd run export:preview -- production/session-001/wiseman-session-001-review.
 - 同じソース・設定を確認した作業用コピーでテスト15件とビルドが成功。実測素材は WAV 76本と字幕102キューの対応、各 WAV 長と発話区間の一致、発話区間の非重複、ROOT 26キューに音声割当がないことを照合した。
 - 本番 MP4 を FFmpeg で全編デコード。30,846フレーム、1920×1080、60 fps、H.264／AAC 44.1 kHz モノラル、コンテナ表示は8:34.12。04:18.500 の抽出フレームで ROOT の Speaking・波形・ロシア語原文・ルビを確認し、04:18.250 から1秒間の音声が無音相当であることを確認した。全字幕・全発話の目視と聴取による同期確認は未実施。
 - Work 側ではヘッドレス Edge 起動と Azure CLI プロファイルの書き込みが制限された。Windows のローカル PowerShell では接続テスト、本番 WAV 生成、60 fps の MP4 書き出しを確認済み。
-- 現在 UTC のリアルタイム表示、macOS の `.app` 化、会話の分岐は未実装。現時点の確定仕様は [SPEC.md](SPEC.md)。
+- macOS の `.app` 化、会話の分岐は未実装。現時点の確定仕様は [SPEC.md](SPEC.md)。
 
 ## 秘密情報の確認
 

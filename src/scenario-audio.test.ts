@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { analyzeAudio, audioWaveform, importAudio, scheduleAudio } from './scenario-audio'
-import { frameAt } from './export'
+import { frameAt } from './session-frame'
 import { scenario, type Scenario } from './timeline'
 
 const samples = new Float32Array(20000)

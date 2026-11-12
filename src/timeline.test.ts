@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { audioCueAt } from './audio'
-import { frameAt } from './export'
+import { frameAt } from './session-frame'
 import { scenario, stateAt } from './timeline'
 import { waveformAt } from './waveform'
 

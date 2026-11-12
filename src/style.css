@@ -18,7 +18,8 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--green); out
 .conference {
   container-type: inline-size;
   display: grid;
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: auto 1fr auto auto;
+  aspect-ratio: 16 / 9;
   width: 100%;
   min-height: 560px;
   position: relative;
@@ -70,7 +71,33 @@ h2 { margin: 1em 0 .45em; font: 600 clamp(10px, 1.04cqw, 20px) var(--mono); lett
 .caption { display: flex; flex-direction: column; align-items: center; gap: .35em; padding: .65em 1.5em; border-radius: 6px; background: #13191e; font-size: clamp(14px, 1.14cqw, 22px); }
 .caption-speaker { color: var(--green); font: 500 .59em var(--mono); letter-spacing: .13em; }
 .caption-secondary { color: #a5b0bd; font-size: .79em; }
-.simulation { display: grid; gap: .3em; justify-self: end; text-align: right; }
+.source-status { display: grid; gap: .3em; justify-self: end; text-align: right; }
+.source-activity {
+  justify-self: end;
+  width: min(34em, calc(100% - 8.3cqw));
+  margin: .6em 4.15cqw 1.1em;
+  padding: .65em .85em;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #10151a;
+  color: var(--muted);
+  font: clamp(10px, .83cqw, 16px)/1.55 var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+.source-activity header {
+  display: flex;
+  justify-content: space-between;
+  gap: .6em;
+  padding-bottom: .35em;
+  border-bottom: 1px solid var(--line);
+  letter-spacing: .08em;
+}
+.source-activity header span:first-child { color: #d1d9e0; }
+.source-activity header span:last-child { display: flex; align-items: center; gap: .5em; }
+.source-live { color: var(--green); }
+.source-activity ol { min-height: 4.65em; margin: .35em 0 0; padding: 0; list-style: none; }
+.source-activity li { display: grid; grid-template-columns: 8ch 13ch 1fr; gap: .8em; }
+.source-activity:has(.source-live) li:last-child { color: var(--green); }
 .call-controls { display: flex; align-items: center; gap: clamp(6px, .62cqw, 12px); }
 .call-controls button { height: clamp(32px, 2.65cqw, 51px); border: 1px solid #303941; border-radius: 6px; background: #151b20; color: #798693; }
 .call-controls svg { width: clamp(14px, 1.16cqw, 22px); height: auto; }
@@ -133,8 +160,8 @@ h2 { margin: 1em 0 .45em; font: 600 clamp(10px, 1.04cqw, 20px) var(--mono); lett
 .conference.opening { background: #000; }
 .conference.opening > * { visibility: hidden; }
 .termination {
-  position: absolute;
-  inset: auto 0 clamp(68px, 6.15cqw, 118px);
+  grid-area: 2 / 1;
+  align-self: center;
   min-height: 4em;
   display: grid;
   place-content: center;
@@ -144,6 +171,7 @@ h2 { margin: 1em 0 .45em; font: 600 clamp(10px, 1.04cqw, 20px) var(--mono); lett
   font: clamp(11px, .85cqw, 16px) var(--mono);
 }
 .termination p { margin: .3em 0; }
+.conference > .session { grid-area: 2 / 1; }
 
 @media (max-width: 450px) {
   .private { flex-wrap: wrap; gap: .35em; }
@@ -151,5 +179,5 @@ h2 { margin: 1em 0 .45em; font: 600 clamp(10px, 1.04cqw, 20px) var(--mono); lett
   .participant h2 { font-size: clamp(8px, 2.3cqw, 10px); }
   .participant-status { font-size: 8px; }
   .participant-status i { display: none; }
-  .simulation { font-size: 8px; }
+  .source-status { font-size: 8px; }
 }

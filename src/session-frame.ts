@@ -3,8 +3,6 @@ import { assetAt, audioWaveform, captionAudioProgress, type AudioAssets } from '
 import { stateAt, type Caption, type Scenario } from './timeline'
 import { waveformAt } from './waveform'
 
-export const captureSize = { width: 1920, height: 1080 }
-
 function revealCaption(text: Caption, progress: (characters: number) => number): Caption {
   const reveal = (line: string) => {
     const characters = Array.from(line)

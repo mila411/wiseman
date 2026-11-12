@@ -1,10 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { createRoot } from 'react-dom/client'
-import { flushSync } from 'react-dom'
-import { captureSize, frameAt } from './export'
-import { scenario as defaultScenario, type Scenario } from './timeline'
-import { importAudio, scheduleAudio, type AudioAssets } from './scenario-audio'
-import { validateScenario } from './import-scenario'
+import { frameAt } from './session-frame'
+import type { Scenario } from './timeline'
+import { scheduleAudio } from './scenario-audio'
 import { loadProductionSession } from './production-session'
 import { waveformBars } from './waveform'
 import './style.css'
@@ -44,33 +42,84 @@ function Participant({ participant }: { participant: Frame['participants'][numbe
   </li>
 }
 
+const exampleNetworks = ['192.0.2', '198.51.100', '203.0.113']
+
+function SourceActivity({ live }: { live: boolean }) {
+  const [entries, setEntries] = useState<{ id: number; utc: string; event: string; source: string }[]>([])
+  const nextId = useRef(0)
+
+  useEffect(() => {
+    if (!live) return
+    let timer: number
+    function append() {
+      const rotate = Math.random() < 0.7
+      const entry = {
+        id: nextId.current++,
+        utc: new Date().toISOString(),
+        event: rotate ? 'MASK ROTATED' : 'ALIAS CHANGED',
+        source: rotate
+          ? `${exampleNetworks[Math.floor(Math.random() * exampleNetworks.length)]}.${1 + Math.floor(Math.random() * 254)}`
+          : `RELAY-${String(1 + Math.floor(Math.random() * 99)).padStart(2, '0')}`,
+      }
+      setEntries(previous => [...previous.slice(-2), entry])
+      timer = window.setTimeout(append, 1000 + Math.random() * 3000)
+    }
+    append()
+    return () => window.clearTimeout(timer)
+  }, [live])
+
+  return <aside className="source-activity" aria-label="Simulated source activity">
+    <header><span>SOURCE ACTIVITY</span><span className={live ? 'source-live' : undefined}><i />{live ? 'LIVE' : 'OFFLINE'}</span></header>
+    <ol>
+      {entries.map(({ id, utc, event, source }) => <li key={id}>
+        <time dateTime={utc} title="UTC">{utc.slice(11, 19)}</time><span>{event}</span><span>{source}</span>
+      </li>)}
+    </ol>
+  </aside>
+}
+
+function UtcClock() {
+  const [utc, setUtc] = useState(() => new Date().toISOString())
+
+  useEffect(() => {
+    let timer: number
+    function tick() {
+      const now = new Date()
+      setUtc(now.toISOString())
+      timer = window.setTimeout(tick, 1000 - now.getUTCMilliseconds())
+    }
+    tick()
+    return () => window.clearTimeout(timer)
+  }, [])
+
+  return <div className="clock"><time dateTime={utc}>{utc.slice(11, 19)}</time> <span>UTC</span></div>
+}
+
 function Conference({ frame, sessionId, presentation, disconnect, playback }: {
   frame: Frame; sessionId: string; presentation?: Scenario['presentation']; disconnect: () => void
-  playback?: { running: boolean; ended: boolean; toggle: () => void; restart: () => void }
+  playback: { version: number; running: boolean; ended: boolean; toggle: () => void; restart: () => void }
 }) {
   const production = presentation === 'session-001'
   const privateLabel = <><Icon name="lock"/> PRIVATE SESSION</>
   const privateSession = <div className="private">
     <span className="service-name"><span aria-hidden="true">🧅</span> NULL LINE</span>
-    {playback
-      ? <button className="heading-control" type="button" aria-label="PRIVATE SESSION — Restart" onClick={playback.restart}>{privateLabel}</button>
-      : privateLabel}
+    <button className="heading-control" type="button" aria-label="PRIVATE SESSION — Restart" onClick={playback.restart}>{privateLabel}</button>
   </div>
   const summary = <p>Private voice session · {frame.participants.length} participants</p>
   const connected = frame.participants.some(participant => participant.connected)
-  return <main className={`conference${production && (playback?.running ?? true) && frame.timeMs < 900 ? ' opening' : ''}`}
-    style={{ aspectRatio: `${captureSize.width} / ${captureSize.height}` }}>
+  const sourceLive = !frame.ended && (!production || connected)
+  return <main className={`conference${production && playback.running && frame.timeMs < 900 ? ' opening' : ''}`}>
     <header className="top">
       {privateSession}
-      <div className="clock"><time dateTime={frame.utc}>{frame.utc.slice(11, 19)}</time> <span>UTC</span></div>
+      <UtcClock/>
       <div className={frame.ended ? 'connection disconnected' : 'connection'}><i />{frame.ended
         ? 'DISCONNECTED' : production && !connected ? 'CONNECTING' : 'CONNECTED'}</div>
     </header>
     <section className="session" aria-labelledby="session-title">
-      <h1 id="session-title">{playback
-          ? <button className="heading-control" type="button" aria-label={meetingTitle + (playback.running ? ' — Pause' : ' — Play')}
-              disabled={playback.ended} onClick={playback.toggle}>{meetingTitle}</button>
-          : meetingTitle}</h1>
+      <h1 id="session-title">
+        <button className="heading-control" type="button" aria-label={meetingTitle + (playback.running ? ' — Pause' : ' — Play')}
+          disabled={playback.ended} onClick={playback.toggle}>{meetingTitle}</button>
+      </h1>
       {summary}
       <ul className="participants" aria-label="Conference participants">
         {frame.participants.map(participant => <Participant key={participant.name} participant={participant}/>)}
@@ -86,6 +135,7 @@ function Conference({ frame, sessionId, presentation, disconnect, playback }: {
         ))}
       </div>
     </section>
+    <SourceActivity key={playback.version} live={sourceLive}/>
     <footer className="bottom">
       <div className="session-id">SESSION ID <strong>{sessionId}</strong></div>
       <div className="call-controls">
@@ -93,7 +143,7 @@ function Conference({ frame, sessionId, presentation, disconnect, playback }: {
         <button className="hangup" type="button" aria-label="Disconnect" disabled={frame.ended} onClick={disconnect}><Icon name="phone"/> Disconnect</button>
         <button className="utility" type="button" disabled aria-label="Settings unavailable in prototype" title="Settings unavailable in prototype"><Icon name="settings"/></button>
       </div>
-      <div className="simulation"><span>ONION SERVICE</span><span>LOCAL SIMULATION</span></div>
+      <div className="source-status"><span>ONION SERVICE</span><span>{sourceLive ? 'SOURCE MASK ACTIVE' : 'SOURCE MASK INACTIVE'}</span></div>
     </footer>
     {production && frame.ended && <div className="termination">
       <p>SECURE SESSION TERMINATED</p>
@@ -191,6 +241,7 @@ function App({ scenario, assets }: Awaited<ReturnType<typeof loadProductionSessi
   return <>
     <Conference frame={frame} sessionId={scenario.id} presentation={scenario.presentation} disconnect={disconnect}
       playback={{
+        version: playbackVersion,
         running,
         ended: time >= duration,
         toggle: () => running ? pause() : void play(),
@@ -201,31 +252,9 @@ function App({ scenario, assets }: Awaited<ReturnType<typeof loadProductionSessi
 }
 
 const root = createRoot(document.getElementById('root')!)
-const params = new URLSearchParams(location.search)
-if (params.has('capture')) {
-  let scenario = defaultScenario
-  let assets: AudioAssets = new Map()
-  const draw = (ms: number) => flushSync(() => root.render(
-    <Conference frame={frameAt(scenario, ms, undefined, assets)} sessionId={scenario.id} presentation={scenario.presentation} disconnect={() => {}}/>,
-  ))
-  Object.assign(window, {
-    wisemanCapture: {
-      draw,
-      async load(files: File[], source?: Scenario, durationMs = 30000) {
-        const context = new OfflineAudioContext(1, Math.ceil(durationMs * 48), 48000)
-        scenario = source ? validateScenario(source) : defaultScenario
-        assets = await importAudio(context, scenario, files)
-        scheduleAudio(context, scenario, assets, 0, durationMs, 0)
-        return (await context.startRendering()).getChannelData(0)
-      },
-    },
-  })
-  draw(0)
-} else {
-  root.render(<p role="status">Loading Research Session 001…</p>)
-  void loadProductionSession().then(session => {
-    root.render(<App {...session}/>)
-  }).catch(error => {
-    root.render(<p role="alert">{error instanceof Error ? error.message : 'Could not load Research Session 001.'}</p>)
-  })
-}
+root.render(<p role="status">Loading Research Session 001…</p>)
+void loadProductionSession().then(session => {
+  root.render(<App {...session}/>)
+}).catch(error => {
+  root.render(<p role="alert">{error instanceof Error ? error.message : 'Could not load Research Session 001.'}</p>)
+})
