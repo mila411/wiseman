@@ -32,7 +32,7 @@ export function stateAt(scenario: Scenario, playbackMs: number) {
   const timeMs = Math.max(0, Math.min(playbackMs, scenario.durationMs))
   const connected = new Set<string>()
   const speaking = new Map<string, number>()
-  const captions = new Map<string, Caption>()
+  const captions = new Map<string, { text: Caption; startedAt: number }>()
   let ended = false
 
   for (const event of scenario.events) {
@@ -54,7 +54,7 @@ export function stateAt(scenario: Scenario, playbackMs: number) {
         captions.delete(event.participant)
         break
       case 'caption_started':
-        captions.set(event.participant, event.caption)
+        captions.set(event.participant, { text: event.caption, startedAt: event.atMs })
         break
       case 'caption_ended':
         captions.delete(event.participant)
@@ -76,7 +76,8 @@ export function stateAt(scenario: Scenario, playbackMs: number) {
       name,
       connected: connected.has(name),
       speakingSince: speaking.get(name),
-      caption: speaking.has(name) ? captions.get(name) : undefined,
+      caption: speaking.has(name) ? captions.get(name)?.text : undefined,
+      captionStartedAt: speaking.has(name) ? captions.get(name)?.startedAt : undefined,
     })),
   }
 }

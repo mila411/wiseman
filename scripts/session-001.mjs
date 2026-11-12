@@ -74,19 +74,21 @@ export function plan(cues, measured = new Map()) {
       if (cue.audioAssetId && measured.has(cue.id)) return measured.get(cue.id)
       if (cue.ru) return 2250
       const words = cue.en.trim().split(/\s+/).length
-      return Math.max(950, Math.round(words * (cue.speaker === 'ROOT' ? 255 : 305) + 240))
+      return Math.max(950, Math.round(words * (cue.speaker === 'ROOT' ? 255 : 305) + 240)) +
+        (cue.extraHoldMs ?? 0)
     })
     const gaps = rows.map((cue, row) => {
       const next = rows[row + 1]
       if (cue.ru) return 1000
       if (next?.ru) return 700
+      if (next?.overlapMs) return -Math.min(next.overlapMs, holds[row], holds[row + 1])
       if (cue.en === "Let's get to work.") return 1000
       if (cue.en === "We're here to establish what actually happened.") return 2000
       return cue.speaker === next?.speaker ? 160 : 350
     })
     const total = holds.reduce((a, b) => a + b, 0) + gaps.reduce((a, b) => a + b, 0)
     const slack = Math.max(0, target - start - total)
-    const spread = rows.map((cue, row) => !cue.ru && !rows[row + 1]?.ru &&
+    const spread = rows.map((cue, row) => !cue.ru && !rows[row + 1]?.ru && !rows[row + 1]?.overlapMs &&
       cue.en !== "Let's get to work." &&
       cue.en !== "We're here to establish what actually happened." &&
       (cue.speaker !== rows[row + 1]?.speaker || row === rows.length - 1))
@@ -116,7 +118,7 @@ export function plan(cues, measured = new Map()) {
   }
   events.push({ atMs: durationMs - 4550, type: 'session_ended' })
   return { cues: timed, scenario: { id: '7F92A1', presentation: 'session-001', utcStart: '2026-02-18T23:41:08Z',
-    durationMs, participants: speakers, events } }
+    durationMs, participants: speakers, events: events.sort((a, b) => a.atMs - b.atMs) } }
 }
 
 async function run() {

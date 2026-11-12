@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { analyzeAudio, audioWaveform, importAudio, scheduleAudio } from './scenario-audio'
+import { frameAt } from './export'
 import { scenario, type Scenario } from './timeline'
 
 const samples = new Float32Array(20000)
@@ -18,6 +19,22 @@ describe('scenario audio', () => {
     expect(audioWaveform(asset, 0).every(height => height === 2)).toBe(true)
     expect(audioWaveform(asset, 499).at(-1)).toBe(20)
     expect(audioWaveform(asset, 1000).every(height => height === 2)).toBe(true)
+  })
+
+  it('keeps captions hidden through leading silence and pauses their reveal between voiced regions', () => {
+    const recording = new Float32Array(5000)
+    recording[850] = 0.5
+    recording.fill(0.2, 1200, 1800)
+    recording.fill(0.2, 2400, 3200)
+    const asset = analyzeAudio({ ...buffer, length: recording.length, getChannelData: () => recording })
+    const production = { ...scenario, presentation: 'session-001' as const }
+    const assets = new Map([['ORACLE', asset]])
+    const caption = (time: number) => frameAt(production, time, undefined, assets).participants[0].caption?.en
+    expect(caption(1299)).toBeUndefined()
+    expect(caption(1300)).toBe('E')
+    expect(caption(1950)).toBe(caption(2450))
+    expect(caption(3400)).toBe("Everyone is here. Let's begin.")
+    expect(caption(1300)).toBe('E')
   })
 
   it('ignores ROOT files before decoding and rejects duplicate cues', async () => {

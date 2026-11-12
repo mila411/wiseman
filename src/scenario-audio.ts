@@ -1,21 +1,54 @@
 import { stateAt, type Scenario } from './timeline'
 import { waveformBars } from './waveform'
 
-export type AudioAsset = { buffer: AudioBuffer; peaks: Float32Array }
+export type AudioAsset = {
+  buffer: AudioBuffer
+  peaks: Float32Array
+  activity: Uint32Array
+}
 export type AudioAssets = ReadonlyMap<string, AudioAsset>
 const bucketMs = 5
+const activityWindowMs = 20
 
 export function analyzeAudio(buffer: AudioBuffer): AudioAsset {
   const bucketSize = Math.max(1, Math.round(buffer.sampleRate * bucketMs / 1000))
   const peaks = new Float32Array(Math.ceil(buffer.length / bucketSize))
+  const windowSize = Math.max(1, Math.round(buffer.sampleRate * activityWindowMs / 1000))
+  const energy = new Float64Array(Math.ceil(buffer.length / windowSize))
   for (let channel = 0; channel < buffer.numberOfChannels; channel++) {
     const samples = buffer.getChannelData(channel)
     for (let i = 0; i < samples.length; i++) {
       const bucket = Math.floor(i / bucketSize)
       peaks[bucket] = Math.max(peaks[bucket], Math.abs(samples[i]))
+      energy[Math.floor(i / windowSize)] += samples[i] ** 2
     }
   }
-  return { buffer, peaks }
+  const rms = energy.map(sum => Math.sqrt(sum / (windowSize * buffer.numberOfChannels)))
+  const threshold = Math.max(0.009, rms.reduce((peak, value) => Math.max(peak, value), 0) * 0.06)
+  const activity = new Uint32Array(rms.length + 1)
+  for (let index = 0; index < rms.length;) {
+    const start = index++
+    if (rms[start] >= threshold) {
+      while (rms[index] >= threshold) index++
+    }
+    const voiced = index - start >= 3
+    for (let window = start; window < index; window++) {
+      activity[window + 1] = activity[window] + Number(voiced)
+    }
+  }
+  return { buffer, peaks, activity }
+}
+
+export function captionAudioProgress(asset: AudioAsset, offsetMs: number, startMs: number, endMs: number) {
+  const { activity, buffer } = asset
+  const windowMs = Math.round(buffer.sampleRate * activityWindowMs / 1000) * 1000 / buffer.sampleRate
+  const at = (ms: number) => activity[Math.max(0, Math.min(activity.length - 1, Math.floor(ms / windowMs)))]
+  const start = at(startMs)
+  const delay = Math.min(80, (endMs - startMs) / 4)
+  const elapsed = at(offsetMs - delay) - start
+  if (elapsed <= 0) return undefined
+  const total = Math.max(elapsed, at(endMs - delay - windowMs) - start)
+  return elapsed / total
 }
 
 export function assetAt(assets: AudioAssets, name: string, startMs: number) {

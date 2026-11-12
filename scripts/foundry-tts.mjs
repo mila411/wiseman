@@ -52,7 +52,7 @@ export function createFoundryTts({
   }
   const url = new URL('/openai/v1/audio/speech', resource)
   let token
-  return async function synthesize(speaker, input) {
+  return async function synthesize(speaker, input, performanceDirection) {
     if (!voiceFor(speaker)) throw new Error(`No TTS voice assigned to ${speaker}.`)
     if (typeof input !== 'string' || !input.trim() || input.length > 4096) throw new Error('Invalid TTS input.')
     if (!token || token.expiresAt <= Date.now() + 120000) token = await getToken()
@@ -64,7 +64,7 @@ export function createFoundryTts({
         model: deployment,
         voice,
         input,
-        instructions: `Speak in natural American English. Read only the input text. ${delivery}`,
+        instructions: `Speak in natural American English. Read only the input text. ${delivery}${performanceDirection ? ' ' + performanceDirection : ''}`,
         response_format: 'wav',
       }),
       signal: AbortSignal.timeout(60000),

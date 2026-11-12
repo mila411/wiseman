@@ -5,6 +5,7 @@ import { captureSize, frameAt } from './export'
 import { scenario as defaultScenario, type Scenario } from './timeline'
 import { importAudio, scheduleAudio, type AudioAssets } from './scenario-audio'
 import { validateScenario } from './import-scenario'
+import { loadProductionSession } from './production-session'
 import { waveformBars } from './waveform'
 import './style.css'
 
@@ -27,64 +28,72 @@ function Avatar() {
 }
 
 type Frame = ReturnType<typeof frameAt>
+const meetingTitle = 'WISEMAN - Regarding the Latest iOS Vulnerability'
 
 function Participant({ participant }: { participant: Frame['participants'][number] }) {
-  const { name, connected, waveform, caption } = participant
+  const { name, connected, waveform } = participant
   return <li className={waveform ? 'participant speaking' : 'participant'}>
     <Avatar />
-    <div className="participant-details">
-      <h2>{name}</h2>
-      {caption && <p className="caption">
-        <span lang="en" tabIndex={0}>{caption.en}</span>
-        {caption.ru && <span className="caption-secondary" lang="ru" tabIndex={0}>{caption.ru}</span>}
-        {caption.jaPronunciation && <span className="caption-secondary" lang="ja" tabIndex={0}>{caption.jaPronunciation}</span>}
-      </p>}
-    </div>
-    <div className="participant-signal">
-      {waveform && <svg className="waveform" viewBox={`0 0 ${waveformBars * 4} 40`} aria-hidden="true">
-        {waveform.map((height, index) => <rect key={index} x={index * 4 + 1} y={(40 - height) / 2} width="2" height={height} rx="1"/>)}
-      </svg>}
-      <span className="participant-status"><i />{waveform ? 'Speaking' : connected ? 'Connected' : 'Disconnected'}</span>
-    </div>
+    <h2>{name}</h2>
+    <span className="participant-status"><i />{waveform ? 'Speaking' : connected ? 'Connected' : 'Disconnected'}</span>
+    <svg className="waveform" viewBox={`0 0 ${waveformBars * 4} 40`} aria-hidden="true">
+      {waveform
+        ? waveform.map((height, index) => <rect key={index} x={index * 4 + 1} y={(40 - height) / 2} width="2" height={height} rx="1"/>)
+        : <path d={`M1 20H${waveformBars * 4 - 1}`}/>}
+    </svg>
   </li>
 }
 
-function Conference({ frame, sessionId, presentation, disconnect }: {
+function Conference({ frame, sessionId, presentation, disconnect, playback }: {
   frame: Frame; sessionId: string; presentation?: Scenario['presentation']; disconnect: () => void
+  playback?: { running: boolean; ended: boolean; toggle: () => void; restart: () => void }
 }) {
   const production = presentation === 'session-001'
-  const privateSession = <h2 id="session-title"><Icon name="lock"/> PRIVATE SESSION</h2>
-  const summary = <p>Encrypted voice conference · {frame.participants.length} participants</p>
+  const privateLabel = <><Icon name="lock"/> PRIVATE SESSION</>
+  const privateSession = <div className="private">
+    <span className="service-name"><span aria-hidden="true">🧅</span> NULL LINE</span>
+    {playback
+      ? <button className="heading-control" type="button" aria-label="PRIVATE SESSION — Restart" onClick={playback.restart}>{privateLabel}</button>
+      : privateLabel}
+  </div>
+  const summary = <p>Private voice session · {frame.participants.length} participants</p>
   const connected = frame.participants.some(participant => participant.connected)
-  return <main className={`conference${production ? ' research-session' : ''}${production && frame.timeMs < 900 ? ' opening' : ''}`}
+  return <main className={`conference${production && (playback?.running ?? true) && frame.timeMs < 900 ? ' opening' : ''}`}
     style={{ aspectRatio: `${captureSize.width} / ${captureSize.height}` }}>
     <header className="top">
-      <div className="call-heading">
-        {production && privateSession}
-        <h1>WISEMAN</h1>
-        {production && summary}
-      </div>
+      {privateSession}
       <div className="clock"><time dateTime={frame.utc}>{frame.utc.slice(11, 19)}</time> <span>UTC</span></div>
       <div className={frame.ended ? 'connection disconnected' : 'connection'}><i />{frame.ended
-        ? 'DISCONNECTED' : production && !connected ? 'CONNECTING' : 'CONNECTED'}
-        {production && connected && <svg className="signal" viewBox="0 0 16 12" aria-hidden="true">
-          <path d="M2 11V9m4 2V7m4 4V4m4 7V1" stroke="currentColor" strokeWidth="1.7" fill="none"/>
-        </svg>}
-      </div>
+        ? 'DISCONNECTED' : production && !connected ? 'CONNECTING' : 'CONNECTED'}</div>
     </header>
     <section className="session" aria-labelledby="session-title">
-      {!production && <div className="session-heading">{privateSession}{summary}</div>}
+      <h1 id="session-title">{playback
+          ? <button className="heading-control" type="button" aria-label={meetingTitle + (playback.running ? ' — Pause' : ' — Play')}
+              disabled={playback.ended} onClick={playback.toggle}>{meetingTitle}</button>
+          : meetingTitle}</h1>
+      {summary}
       <ul className="participants" aria-label="Conference participants">
         {frame.participants.map(participant => <Participant key={participant.name} participant={participant}/>)}
       </ul>
+      <div className="caption-slot">
+        {frame.participants.map(({ name, caption }) => caption && (
+          <p className="caption" key={name}>
+            <span className="caption-speaker">{name}</span>
+            <span lang="en" tabIndex={0}>{caption.en}</span>
+            {caption.ru && <span className="caption-secondary" lang="ru" tabIndex={0}>{caption.ru}</span>}
+            {caption.jaPronunciation && <span className="caption-secondary" lang="ja" tabIndex={0}>{caption.jaPronunciation}</span>}
+          </p>
+        ))}
+      </div>
     </section>
     <footer className="bottom">
       <div className="session-id">SESSION ID <strong>{sessionId}</strong></div>
       <div className="call-controls">
         <button className="utility" type="button" disabled aria-label="Microphone unavailable in prototype" title="Microphone unavailable in prototype"><Icon name="mic"/></button>
-        <button className="hangup" type="button" aria-label="Disconnect" disabled={frame.ended} onClick={disconnect}><Icon name="phone"/>{!production && ' Disconnect'}</button>
+        <button className="hangup" type="button" aria-label="Disconnect" disabled={frame.ended} onClick={disconnect}><Icon name="phone"/> Disconnect</button>
         <button className="utility" type="button" disabled aria-label="Settings unavailable in prototype" title="Settings unavailable in prototype"><Icon name="settings"/></button>
       </div>
+      <div className="simulation"><span>ONION SERVICE</span><span>LOCAL SIMULATION</span></div>
     </footer>
     {production && frame.ended && <div className="termination">
       <p>SECURE SESSION TERMINATED</p>
@@ -93,14 +102,11 @@ function Conference({ frame, sessionId, presentation, disconnect }: {
   </main>
 }
 
-function App() {
-  const [scenario, setScenario] = useState(defaultScenario)
+function App({ scenario, assets }: Awaited<ReturnType<typeof loadProductionSession>>) {
   const [time, setTime] = useState(0)
   const [playing, setPlaying] = useState(false)
   const [playbackVersion, setPlaybackVersion] = useState(0)
   const [disconnectAt, setDisconnectAt] = useState<number>()
-  const [assets, setAssets] = useState<AudioAssets>(new Map())
-  const [importing, setImporting] = useState(false)
   const [message, setMessage] = useState('')
   const audioContext = useRef<AudioContext | null>(null)
   const position = useRef(0)
@@ -129,6 +135,22 @@ function App() {
     }
   }, [assets, duration, playbackVersion, running, scenario])
 
+  useEffect(() => {
+    const context = new AudioContext()
+    audioContext.current = context
+    let active = true
+    void context.resume().then(() => {
+      if (active && playRequest.current === 0) {
+        setPlaying(true)
+      }
+    }).catch(() => {})
+    return () => {
+      active = false
+      audioContext.current = null
+      void context.close()
+    }
+  }, [])
+
   async function play(restart = false) {
     const request = ++playRequest.current
     if (assets.size || scenario.presentation) {
@@ -141,6 +163,7 @@ function App() {
       }
     }
     if (request !== playRequest.current) return
+    setMessage('')
     if (restart) {
       setDisconnectAt(undefined)
       seek(0)
@@ -159,30 +182,6 @@ function App() {
     setTime(value)
   }
 
-  async function load(files: File[]) {
-    pause()
-    setImporting(true)
-    try {
-      const scripts = files.filter(file => /\.json$/i.test(file.name))
-      if (scripts.length > 1) throw new Error('Select one scenario JSON file at a time.')
-      const next = scripts.length ? validateScenario(JSON.parse(await scripts[0].text())) : scenario
-      const clips = files.filter(file => !scripts.includes(file))
-      if (clips.length) audioContext.current ??= new AudioContext()
-      const imported = clips.length ? await importAudio(audioContext.current!, next, clips) : new Map()
-      if (scripts.length) {
-        setScenario(next)
-        setDisconnectAt(undefined)
-        seek(0)
-      }
-      setAssets(imported)
-      setMessage(`Loaded ${imported.size} audio clips. ROOT is silent.`)
-    } catch (error) {
-      setMessage(error instanceof Error ? error.message : 'Could not import audio.')
-    } finally {
-      setImporting(false)
-    }
-  }
-
   function disconnect() {
     pause()
     setDisconnectAt(time)
@@ -190,29 +189,20 @@ function App() {
   }
 
   return <>
-    <Conference frame={frame} sessionId={scenario.id} presentation={scenario.presentation} disconnect={disconnect}/>
-    <section className="playback" aria-label="Prototype playback">
-      <button type="button" disabled={importing || time >= duration} onClick={() => running ? pause() : void play()}>{running ? 'Pause' : 'Play'}</button>
-      <button type="button" disabled={importing} onClick={() => void play(true)}>Restart</button>
-      <input aria-label="Seek playback" type="range" min="0" max={duration} step="any" value={time} onChange={event => {
-        pause()
-        seek(Number(event.target.value))
+    <Conference frame={frame} sessionId={scenario.id} presentation={scenario.presentation} disconnect={disconnect}
+      playback={{
+        running,
+        ended: time >= duration,
+        toggle: () => running ? pause() : void play(),
+        restart: () => void play(true),
       }}/>
-      <output>{(time / 1000).toFixed(2)} s / {(duration / 1000).toFixed(2)} s</output>
-    </section>
-    <section className="playback" aria-label="Scenario audio">
-      <label>Import scenario or audio <input type="file" accept="audio/*,.wav,.mp3,.m4a,.ogg,.json" multiple disabled={importing} onChange={event => {
-        const files = Array.from(event.currentTarget.files ?? [])
-        event.currentTarget.value = ''
-        if (files.length) void load(files)
-      }}/></label>
-      <span role="status">{importing ? 'Importing audio…' : message}</span>
-    </section>
+    {message && <p role="alert">{message}</p>}
   </>
 }
 
 const root = createRoot(document.getElementById('root')!)
-if (new URLSearchParams(location.search).has('capture')) {
+const params = new URLSearchParams(location.search)
+if (params.has('capture')) {
   let scenario = defaultScenario
   let assets: AudioAssets = new Map()
   const draw = (ms: number) => flushSync(() => root.render(
@@ -232,5 +222,10 @@ if (new URLSearchParams(location.search).has('capture')) {
   })
   draw(0)
 } else {
-  root.render(<App />)
+  root.render(<p role="status">Loading Research Session 001…</p>)
+  void loadProductionSession().then(session => {
+    root.render(<App {...session}/>)
+  }).catch(error => {
+    root.render(<p role="alert">{error instanceof Error ? error.message : 'Could not load Research Session 001.'}</p>)
+  })
 }

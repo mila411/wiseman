@@ -1,0 +1,2493 @@
+{
+  "id": "7F92A1",
+  "presentation": "session-001",
+  "utcStart": "2026-02-18T23:41:08Z",
+  "durationMs": 524315,
+  "participants": [
+    "ORACLE",
+    "GHOST",
+    "ZERO",
+    "SPECTER",
+    "ROOT"
+  ],
+  "events": [
+    {
+      "atMs": 900,
+      "type": "participant_joined",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 1550,
+      "type": "participant_joined",
+      "participant": "GHOST"
+    },
+    {
+      "atMs": 2200,
+      "type": "participant_joined",
+      "participant": "ZERO"
+    },
+    {
+      "atMs": 2850,
+      "type": "participant_joined",
+      "participant": "SPECTER"
+    },
+    {
+      "atMs": 3500,
+      "type": "participant_joined",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 5200,
+      "type": "participant_speaking_started",
+      "participant": "ORACLE",
+      "audioAssetId": "S001-U001"
+    },
+    {
+      "atMs": 5200,
+      "type": "caption_started",
+      "participant": "ORACLE",
+      "caption": {
+        "en": "Well. It's been a while since we used the WISEMAN name."
+      }
+    },
+    {
+      "atMs": 10600,
+      "type": "caption_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 10600,
+      "type": "participant_speaking_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 10760,
+      "type": "participant_speaking_started",
+      "participant": "ORACLE",
+      "audioAssetId": "S001-U002"
+    },
+    {
+      "atMs": 10760,
+      "type": "caption_started",
+      "participant": "ORACLE",
+      "caption": {
+        "en": "We've all been doing our own thing. I think it's time we brought that work back together."
+      }
+    },
+    {
+      "atMs": 15210,
+      "type": "caption_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 15210,
+      "type": "participant_speaking_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 15370,
+      "type": "participant_speaking_started",
+      "participant": "ORACLE",
+      "audioAssetId": "S001-U003"
+    },
+    {
+      "atMs": 15370,
+      "type": "caption_started",
+      "participant": "ORACLE",
+      "caption": {
+        "en": "Let's keep this short. Stick to what we can back up."
+      }
+    },
+    {
+      "atMs": 18970,
+      "type": "caption_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 18970,
+      "type": "participant_speaking_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 19130,
+      "type": "participant_speaking_started",
+      "participant": "ORACLE",
+      "audioAssetId": "S001-U004"
+    },
+    {
+      "atMs": 19130,
+      "type": "caption_started",
+      "participant": "ORACLE",
+      "caption": {
+        "en": "If we're guessing, say so."
+      }
+    },
+    {
+      "atMs": 21330,
+      "type": "caption_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 21330,
+      "type": "participant_speaking_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 21490,
+      "type": "participant_speaking_started",
+      "participant": "ORACLE",
+      "audioAssetId": "S001-U005"
+    },
+    {
+      "atMs": 21490,
+      "type": "caption_started",
+      "participant": "ORACLE",
+      "caption": {
+        "en": "Let's get to work."
+      }
+    },
+    {
+      "atMs": 23940,
+      "type": "caption_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 23940,
+      "type": "participant_speaking_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 24940,
+      "type": "participant_speaking_started",
+      "participant": "GHOST",
+      "audioAssetId": "S001-U006"
+    },
+    {
+      "atMs": 24940,
+      "type": "caption_started",
+      "participant": "GHOST",
+      "caption": {
+        "en": "Yeah, good to hear you all. I went through Apple's latest disclosures. A couple of things stood out."
+      }
+    },
+    {
+      "atMs": 32390,
+      "type": "caption_ended",
+      "participant": "GHOST"
+    },
+    {
+      "atMs": 32390,
+      "type": "participant_speaking_ended",
+      "participant": "GHOST"
+    },
+    {
+      "atMs": 33210,
+      "type": "participant_speaking_started",
+      "participant": "ZERO",
+      "audioAssetId": "S001-U007"
+    },
+    {
+      "atMs": 33210,
+      "type": "caption_started",
+      "participant": "ZERO",
+      "caption": {
+        "en": "I've been looking at the ARM64 side. Uh, mostly pointer authentication and how long the objects are supposed to stay alive."
+      }
+    },
+    {
+      "atMs": 43460,
+      "type": "caption_ended",
+      "participant": "ZERO"
+    },
+    {
+      "atMs": 43460,
+      "type": "participant_speaking_ended",
+      "participant": "ZERO"
+    },
+    {
+      "atMs": 44280,
+      "type": "participant_speaking_started",
+      "participant": "SPECTER",
+      "audioAssetId": "S001-U008"
+    },
+    {
+      "atMs": 44280,
+      "type": "caption_started",
+      "participant": "SPECTER",
+      "caption": {
+        "en": "I've been on the browser side. Different surface, but I keep running into some of the same questions."
+      }
+    },
+    {
+      "atMs": 52430,
+      "type": "caption_ended",
+      "participant": "SPECTER"
+    },
+    {
+      "atMs": 52430,
+      "type": "participant_speaking_ended",
+      "participant": "SPECTER"
+    },
+    {
+      "atMs": 53250,
+      "type": "participant_speaking_started",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 53250,
+      "type": "caption_started",
+      "participant": "ROOT",
+      "caption": {
+        "en": "Then let's establish the boundaries first. What do we actually know, and what are we merely assuming?"
+      }
+    },
+    {
+      "atMs": 59760,
+      "type": "caption_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 59760,
+      "type": "participant_speaking_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 60580,
+      "type": "participant_speaking_started",
+      "participant": "ORACLE",
+      "audioAssetId": "S001-U010"
+    },
+    {
+      "atMs": 60580,
+      "type": "caption_started",
+      "participant": "ORACLE",
+      "caption": {
+        "en": "Okay. Ghost, take us through Bluetooth."
+      }
+    },
+    {
+      "atMs": 64180,
+      "type": "caption_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 64180,
+      "type": "participant_speaking_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 65000,
+      "type": "participant_speaking_started",
+      "participant": "GHOST",
+      "audioAssetId": "S001-U011"
+    },
+    {
+      "atMs": 65000,
+      "type": "caption_started",
+      "participant": "GHOST",
+      "caption": {
+        "en": "Bluetooth was the one that caught my eye."
+      }
+    },
+    {
+      "atMs": 67500,
+      "type": "caption_ended",
+      "participant": "GHOST"
+    },
+    {
+      "atMs": 67500,
+      "type": "participant_speaking_ended",
+      "participant": "GHOST"
+    },
+    {
+      "atMs": 67660,
+      "type": "participant_speaking_started",
+      "participant": "GHOST",
+      "audioAssetId": "S001-U012"
+    },
+    {
+      "atMs": 67660,
+      "type": "caption_started",
+      "participant": "GHOST",
+      "caption": {
+        "en": "We have reports involving memory corruption, pairing behavior, and insufficient restrictions on authentication attempts."
+      }
+    },
+    {
+      "atMs": 74860,
+      "type": "caption_ended",
+      "participant": "GHOST"
+    },
+    {
+      "atMs": 74860,
+      "type": "participant_speaking_ended",
+      "participant": "GHOST"
+    },
+    {
+      "atMs": 75020,
+      "type": "participant_speaking_started",
+      "participant": "GHOST",
+      "audioAssetId": "S001-U013"
+    },
+    {
+      "atMs": 75020,
+      "type": "caption_started",
+      "participant": "GHOST",
+      "caption": {
+        "en": "So, three separate issues. Could be three different failure modes."
+      }
+    },
+    {
+      "atMs": 80320,
+      "type": "caption_ended",
+      "participant": "GHOST"
+    },
+    {
+      "atMs": 80320,
+      "type": "participant_speaking_ended",
+      "participant": "GHOST"
+    },
+    {
+      "atMs": 80670,
+      "type": "participant_speaking_started",
+      "participant": "ORACLE",
+      "audioAssetId": "S001-U014"
+    },
+    {
+      "atMs": 80670,
+      "type": "caption_started",
+      "participant": "ORACLE",
+      "caption": {
+        "en": "Do we have anything that actually links them?"
+      }
+    },
+    {
+      "atMs": 83270,
+      "type": "caption_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 83270,
+      "type": "participant_speaking_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 83620,
+      "type": "participant_speaking_started",
+      "participant": "GHOST",
+      "audioAssetId": "S001-U015"
+    },
+    {
+      "atMs": 83620,
+      "type": "caption_started",
+      "participant": "GHOST",
+      "caption": {
+        "en": "No. Nothing I'd put in a report yet."
+      }
+    },
+    {
+      "atMs": 86820,
+      "type": "caption_ended",
+      "participant": "GHOST"
+    },
+    {
+      "atMs": 86820,
+      "type": "participant_speaking_ended",
+      "participant": "GHOST"
+    },
+    {
+      "atMs": 86980,
+      "type": "participant_speaking_started",
+      "participant": "GHOST",
+      "audioAssetId": "S001-U016"
+    },
+    {
+      "atMs": 86980,
+      "type": "caption_started",
+      "participant": "GHOST",
+      "caption": {
+        "en": "CVE-2026-113970 is associated with a Bluetooth use-after-free condition."
+      }
+    },
+    {
+      "atMs": 94730,
+      "type": "caption_ended",
+      "participant": "GHOST"
+    },
+    {
+      "atMs": 94730,
+      "type": "participant_speaking_ended",
+      "participant": "GHOST"
+    },
+    {
+      "atMs": 94890,
+      "type": "participant_speaking_started",
+      "participant": "GHOST",
+      "audioAssetId": "S001-U017"
+    },
+    {
+      "atMs": 94890,
+      "type": "caption_started",
+      "participant": "GHOST",
+      "caption": {
+        "en": "CVE-2026-113965 and CVE-2026-113964 concern pairing-related behavior in CoreUtils."
+      }
+    },
+    {
+      "atMs": 107090,
+      "type": "caption_ended",
+      "participant": "GHOST"
+    },
+    {
+      "atMs": 107090,
+      "type": "participant_speaking_ended",
+      "participant": "GHOST"
+    },
+    {
+      "atMs": 107250,
+      "type": "participant_speaking_started",
+      "participant": "GHOST",
+      "audioAssetId": "S001-U018"
+    },
+    {
+      "atMs": 107250,
+      "type": "caption_started",
+      "participant": "GHOST",
+      "caption": {
+        "en": "Yeah. Hang on. We don't have enough to call it one chain."
+      }
+    },
+    {
+      "atMs": 111900,
+      "type": "caption_ended",
+      "participant": "GHOST"
+    },
+    {
+      "atMs": 111900,
+      "type": "participant_speaking_ended",
+      "participant": "GHOST"
+    },
+    {
+      "atMs": 112250,
+      "type": "participant_speaking_started",
+      "participant": "ZERO",
+      "audioAssetId": "S001-U019"
+    },
+    {
+      "atMs": 112250,
+      "type": "caption_started",
+      "participant": "ZERO",
+      "caption": {
+        "en": "Right. It's the same—sorry, no. One's about how long the object stays alive. The other's about what the system trusts."
+      }
+    },
+    {
+      "atMs": 122100,
+      "type": "caption_ended",
+      "participant": "ZERO"
+    },
+    {
+      "atMs": 122100,
+      "type": "participant_speaking_ended",
+      "participant": "ZERO"
+    },
+    {
+      "atMs": 122260,
+      "type": "participant_speaking_started",
+      "participant": "ZERO",
+      "audioAssetId": "S001-U020"
+    },
+    {
+      "atMs": 122260,
+      "type": "caption_started",
+      "participant": "ZERO",
+      "caption": {
+        "en": "Similar consequences don't imply a common cause."
+      }
+    },
+    {
+      "atMs": 126360,
+      "type": "participant_speaking_started",
+      "participant": "SPECTER",
+      "audioAssetId": "S001-U021"
+    },
+    {
+      "atMs": 126360,
+      "type": "caption_started",
+      "participant": "SPECTER",
+      "caption": {
+        "en": "Wait, can I jump in? Bluetooth and WebKit are different entry points. We should keep those separate for now."
+      }
+    },
+    {
+      "atMs": 126610,
+      "type": "caption_ended",
+      "participant": "ZERO"
+    },
+    {
+      "atMs": 126610,
+      "type": "participant_speaking_ended",
+      "participant": "ZERO"
+    },
+    {
+      "atMs": 133510,
+      "type": "caption_ended",
+      "participant": "SPECTER"
+    },
+    {
+      "atMs": 133510,
+      "type": "participant_speaking_ended",
+      "participant": "SPECTER"
+    },
+    {
+      "atMs": 133860,
+      "type": "participant_speaking_started",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 133860,
+      "type": "caption_started",
+      "participant": "ROOT",
+      "caption": {
+        "en": "The interesting question is whether the security boundary fails before or after the system accepts the external input."
+      }
+    },
+    {
+      "atMs": 140720,
+      "type": "caption_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 140720,
+      "type": "participant_speaking_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 140880,
+      "type": "participant_speaking_started",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 140880,
+      "type": "caption_started",
+      "participant": "ROOT",
+      "caption": {
+        "en": "If Bluetooth pairing state is trusted too early, the consequences could be broader than the individual validation failure."
+      }
+    },
+    {
+      "atMs": 147740,
+      "type": "caption_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 147740,
+      "type": "participant_speaking_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 147900,
+      "type": "participant_speaking_started",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 147900,
+      "type": "caption_started",
+      "participant": "ROOT",
+      "caption": {
+        "en": "But that's a hypothesis, not a finding."
+      }
+    },
+    {
+      "atMs": 150910,
+      "type": "caption_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 150910,
+      "type": "participant_speaking_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 151260,
+      "type": "participant_speaking_started",
+      "participant": "ORACLE",
+      "audioAssetId": "S001-U025"
+    },
+    {
+      "atMs": 151260,
+      "type": "caption_started",
+      "participant": "ORACLE",
+      "caption": {
+        "en": "Yeah. Good. Let's keep that distinction clear."
+      }
+    },
+    {
+      "atMs": 154660,
+      "type": "caption_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 154660,
+      "type": "participant_speaking_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 155010,
+      "type": "participant_speaking_started",
+      "participant": "ZERO",
+      "audioAssetId": "S001-U026"
+    },
+    {
+      "atMs": 155010,
+      "type": "caption_started",
+      "participant": "ZERO",
+      "caption": {
+        "en": "On ARM64, there's another wrinkle. Pointer authentication."
+      }
+    },
+    {
+      "atMs": 160460,
+      "type": "caption_ended",
+      "participant": "ZERO"
+    },
+    {
+      "atMs": 160460,
+      "type": "participant_speaking_ended",
+      "participant": "ZERO"
+    },
+    {
+      "atMs": 160620,
+      "type": "participant_speaking_started",
+      "participant": "ZERO",
+      "audioAssetId": "S001-U027"
+    },
+    {
+      "atMs": 160620,
+      "type": "caption_started",
+      "participant": "ZERO",
+      "caption": {
+        "en": "PAC can help detect certain forms of pointer manipulation, but it doesn't guarantee memory safety."
+      }
+    },
+    {
+      "atMs": 167170,
+      "type": "caption_ended",
+      "participant": "ZERO"
+    },
+    {
+      "atMs": 167170,
+      "type": "participant_speaking_ended",
+      "participant": "ZERO"
+    },
+    {
+      "atMs": 167330,
+      "type": "participant_speaking_started",
+      "participant": "ZERO",
+      "audioAssetId": "S001-U028"
+    },
+    {
+      "atMs": 167330,
+      "type": "caption_started",
+      "participant": "ZERO",
+      "caption": {
+        "en": "You can have a perfectly authenticated pointer to an object that's already gone."
+      }
+    },
+    {
+      "atMs": 172580,
+      "type": "participant_speaking_started",
+      "participant": "GHOST",
+      "audioAssetId": "S001-U029"
+    },
+    {
+      "atMs": 172580,
+      "type": "caption_started",
+      "participant": "GHOST",
+      "caption": {
+        "en": "Right. The pointer can check out."
+      }
+    },
+    {
+      "atMs": 172760,
+      "type": "caption_ended",
+      "participant": "ZERO"
+    },
+    {
+      "atMs": 172760,
+      "type": "participant_speaking_ended",
+      "participant": "ZERO"
+    },
+    {
+      "atMs": 175380,
+      "type": "caption_ended",
+      "participant": "GHOST"
+    },
+    {
+      "atMs": 175380,
+      "type": "participant_speaking_ended",
+      "participant": "GHOST"
+    },
+    {
+      "atMs": 175540,
+      "type": "participant_speaking_started",
+      "participant": "GHOST",
+      "audioAssetId": "S001-U030"
+    },
+    {
+      "atMs": 175540,
+      "type": "caption_started",
+      "participant": "GHOST",
+      "caption": {
+        "en": "What I want to know is whether the component still owns the object when it touches it."
+      }
+    },
+    {
+      "atMs": 180790,
+      "type": "caption_ended",
+      "participant": "GHOST"
+    },
+    {
+      "atMs": 180790,
+      "type": "participant_speaking_ended",
+      "participant": "GHOST"
+    },
+    {
+      "atMs": 181140,
+      "type": "participant_speaking_started",
+      "participant": "SPECTER",
+      "audioAssetId": "S001-U031"
+    },
+    {
+      "atMs": 181140,
+      "type": "caption_started",
+      "participant": "SPECTER",
+      "caption": {
+        "en": "We've seen similar reasoning applied to browser memory-safety investigations."
+      }
+    },
+    {
+      "atMs": 186690,
+      "type": "caption_ended",
+      "participant": "SPECTER"
+    },
+    {
+      "atMs": 186690,
+      "type": "participant_speaking_ended",
+      "participant": "SPECTER"
+    },
+    {
+      "atMs": 186850,
+      "type": "participant_speaking_started",
+      "participant": "SPECTER",
+      "audioAssetId": "S001-U032"
+    },
+    {
+      "atMs": 186850,
+      "type": "caption_started",
+      "participant": "SPECTER",
+      "caption": {
+        "en": "JIT behavior, object lifetime, and state transitions can interact in complicated ways."
+      }
+    },
+    {
+      "atMs": 194000,
+      "type": "caption_ended",
+      "participant": "SPECTER"
+    },
+    {
+      "atMs": 194000,
+      "type": "participant_speaking_ended",
+      "participant": "SPECTER"
+    },
+    {
+      "atMs": 194160,
+      "type": "participant_speaking_started",
+      "participant": "SPECTER",
+      "audioAssetId": "S001-U033"
+    },
+    {
+      "atMs": 194160,
+      "type": "caption_started",
+      "participant": "SPECTER",
+      "caption": {
+        "en": "I should be clear. That's a parallel in the reasoning. We don't know if the root cause is the same."
+      }
+    },
+    {
+      "atMs": 200010,
+      "type": "caption_ended",
+      "participant": "SPECTER"
+    },
+    {
+      "atMs": 200010,
+      "type": "participant_speaking_ended",
+      "participant": "SPECTER"
+    },
+    {
+      "atMs": 200360,
+      "type": "participant_speaking_started",
+      "participant": "ORACLE",
+      "audioAssetId": "S001-U034"
+    },
+    {
+      "atMs": 200360,
+      "type": "caption_started",
+      "participant": "ORACLE",
+      "caption": {
+        "en": "Okay, so what would tell us it's an ownership problem? What would we actually see?"
+      }
+    },
+    {
+      "atMs": 206210,
+      "type": "caption_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 206210,
+      "type": "participant_speaking_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 206560,
+      "type": "participant_speaking_started",
+      "participant": "ZERO",
+      "audioAssetId": "S001-U035"
+    },
+    {
+      "atMs": 206560,
+      "type": "caption_started",
+      "participant": "ZERO",
+      "caption": {
+        "en": "We'd need to see it repeat."
+      }
+    },
+    {
+      "atMs": 209460,
+      "type": "caption_ended",
+      "participant": "ZERO"
+    },
+    {
+      "atMs": 209460,
+      "type": "participant_speaking_ended",
+      "participant": "ZERO"
+    },
+    {
+      "atMs": 209620,
+      "type": "participant_speaking_started",
+      "participant": "ZERO",
+      "audioAssetId": "S001-U036"
+    },
+    {
+      "atMs": 209620,
+      "type": "caption_started",
+      "participant": "ZERO",
+      "caption": {
+        "en": "We need to identify the object state before the transition, the operation that changes ownership, and the first access that violates the expected lifetime."
+      }
+    },
+    {
+      "atMs": 219520,
+      "type": "caption_ended",
+      "participant": "ZERO"
+    },
+    {
+      "atMs": 219520,
+      "type": "participant_speaking_ended",
+      "participant": "ZERO"
+    },
+    {
+      "atMs": 219870,
+      "type": "participant_speaking_started",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 219870,
+      "type": "caption_started",
+      "participant": "ROOT",
+      "caption": {
+        "en": "And we need to avoid mistaking a crash signature for a complete explanation."
+      }
+    },
+    {
+      "atMs": 224980,
+      "type": "caption_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 224980,
+      "type": "participant_speaking_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 225140,
+      "type": "participant_speaking_started",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 225140,
+      "type": "caption_started",
+      "participant": "ROOT",
+      "caption": {
+        "en": "A crash tells us where execution failed. It doesn't necessarily tell us where the invariant was first violated."
+      }
+    },
+    {
+      "atMs": 232000,
+      "type": "caption_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 232000,
+      "type": "participant_speaking_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 232350,
+      "type": "participant_speaking_started",
+      "participant": "GHOST",
+      "audioAssetId": "S001-U039"
+    },
+    {
+      "atMs": 232350,
+      "type": "caption_started",
+      "participant": "GHOST",
+      "caption": {
+        "en": "Yeah, one crash report only gets you so far."
+      }
+    },
+    {
+      "atMs": 237000,
+      "type": "caption_ended",
+      "participant": "GHOST"
+    },
+    {
+      "atMs": 237000,
+      "type": "participant_speaking_ended",
+      "participant": "GHOST"
+    },
+    {
+      "atMs": 237160,
+      "type": "participant_speaking_started",
+      "participant": "GHOST",
+      "audioAssetId": "S001-U040"
+    },
+    {
+      "atMs": 237160,
+      "type": "caption_started",
+      "participant": "GHOST",
+      "caption": {
+        "en": "You can identify the symptom and still misunderstand the defect."
+      }
+    },
+    {
+      "atMs": 241910,
+      "type": "caption_ended",
+      "participant": "GHOST"
+    },
+    {
+      "atMs": 241910,
+      "type": "participant_speaking_ended",
+      "participant": "GHOST"
+    },
+    {
+      "atMs": 242260,
+      "type": "participant_speaking_started",
+      "participant": "ORACLE",
+      "audioAssetId": "S001-U041"
+    },
+    {
+      "atMs": 242260,
+      "type": "caption_started",
+      "participant": "ORACLE",
+      "caption": {
+        "en": "All right. Let's start with what we can actually observe."
+      }
+    },
+    {
+      "atMs": 245860,
+      "type": "caption_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 245860,
+      "type": "participant_speaking_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 246210,
+      "type": "participant_speaking_started",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 246210,
+      "type": "caption_started",
+      "participant": "ROOT",
+      "caption": {
+        "en": "There's something else."
+      }
+    },
+    {
+      "atMs": 247820,
+      "type": "caption_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 247820,
+      "type": "participant_speaking_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 247980,
+      "type": "participant_speaking_started",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 247980,
+      "type": "caption_started",
+      "participant": "ROOT",
+      "caption": {
+        "en": "If the ownership transition happens asynchronously, then the failure may not occur at the point where the object is released."
+      }
+    },
+    {
+      "atMs": 255540,
+      "type": "caption_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 255540,
+      "type": "participant_speaking_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 255700,
+      "type": "participant_speaking_started",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 255700,
+      "type": "caption_started",
+      "participant": "ROOT",
+      "caption": {
+        "en": "The issue isn't necessarily the pointer itself."
+      }
+    },
+    {
+      "atMs": 258710,
+      "type": "caption_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 258710,
+      "type": "participant_speaking_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 258870,
+      "type": "participant_speaking_started",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 258870,
+      "type": "caption_started",
+      "participant": "ROOT",
+      "caption": {
+        "en": "It's the assumption that the object remains valid after the ownership boundary changes—"
+      }
+    },
+    {
+      "atMs": 263980,
+      "type": "caption_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 264680,
+      "type": "participant_speaking_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 264680,
+      "type": "participant_speaking_started",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 264680,
+      "type": "caption_started",
+      "participant": "ROOT",
+      "caption": {
+        "en": "",
+        "ru": "Нет, подожди... чёрт.",
+        "jaPronunciation": "ニェート、パダジー……チョルト。"
+      }
+    },
+    {
+      "atMs": 266930,
+      "type": "caption_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 267930,
+      "type": "participant_speaking_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 267930,
+      "type": "participant_speaking_started",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 267930,
+      "type": "caption_started",
+      "participant": "ROOT",
+      "caption": {
+        "en": "Sorry. No, wait. Let me put that another way."
+      }
+    },
+    {
+      "atMs": 271640,
+      "type": "caption_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 271640,
+      "type": "participant_speaking_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 271990,
+      "type": "participant_speaking_started",
+      "participant": "ORACLE",
+      "audioAssetId": "S001-U048"
+    },
+    {
+      "atMs": 271990,
+      "type": "caption_started",
+      "participant": "ORACLE",
+      "caption": {
+        "en": "Mm-hm. Go ahead."
+      }
+    },
+    {
+      "atMs": 275090,
+      "type": "caption_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 275090,
+      "type": "participant_speaking_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 275440,
+      "type": "participant_speaking_started",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 275440,
+      "type": "caption_started",
+      "participant": "ROOT",
+      "caption": {
+        "en": "As I was saying, we need to distinguish memory corruption from a failure in object lifetime management."
+      }
+    },
+    {
+      "atMs": 281950,
+      "type": "caption_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 281950,
+      "type": "participant_speaking_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 282110,
+      "type": "participant_speaking_started",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 282110,
+      "type": "caption_started",
+      "participant": "ROOT",
+      "caption": {
+        "en": "Those are related concepts, but they're not interchangeable."
+      }
+    },
+    {
+      "atMs": 285470,
+      "type": "caption_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 285470,
+      "type": "participant_speaking_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 285630,
+      "type": "participant_speaking_started",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 285630,
+      "type": "caption_started",
+      "participant": "ROOT",
+      "caption": {
+        "en": "Without the execution trace, we cannot establish which condition actually occurred."
+      }
+    },
+    {
+      "atMs": 290040,
+      "type": "caption_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 290040,
+      "type": "participant_speaking_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 290390,
+      "type": "participant_speaking_started",
+      "participant": "GHOST",
+      "audioAssetId": "S001-U052"
+    },
+    {
+      "atMs": 290390,
+      "type": "caption_started",
+      "participant": "GHOST",
+      "caption": {
+        "en": "Yeah, we're seeing the same thing on our end."
+      }
+    },
+    {
+      "atMs": 292940,
+      "type": "caption_ended",
+      "participant": "GHOST"
+    },
+    {
+      "atMs": 292940,
+      "type": "participant_speaking_ended",
+      "participant": "GHOST"
+    },
+    {
+      "atMs": 293100,
+      "type": "participant_speaking_started",
+      "participant": "GHOST",
+      "audioAssetId": "S001-U053"
+    },
+    {
+      "atMs": 293100,
+      "type": "caption_started",
+      "participant": "GHOST",
+      "caption": {
+        "en": "The available evidence doesn't establish the complete sequence of state transitions."
+      }
+    },
+    {
+      "atMs": 299500,
+      "type": "caption_ended",
+      "participant": "GHOST"
+    },
+    {
+      "atMs": 299500,
+      "type": "participant_speaking_ended",
+      "participant": "GHOST"
+    },
+    {
+      "atMs": 299850,
+      "type": "participant_speaking_started",
+      "participant": "ZERO",
+      "audioAssetId": "S001-U054"
+    },
+    {
+      "atMs": 299850,
+      "type": "caption_started",
+      "participant": "ZERO",
+      "caption": {
+        "en": "Okay. Keep going."
+      }
+    },
+    {
+      "atMs": 302450,
+      "type": "caption_ended",
+      "participant": "ZERO"
+    },
+    {
+      "atMs": 302450,
+      "type": "participant_speaking_ended",
+      "participant": "ZERO"
+    },
+    {
+      "atMs": 302800,
+      "type": "participant_speaking_started",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 302800,
+      "type": "caption_started",
+      "participant": "ROOT",
+      "caption": {
+        "en": "Then the next step is straightforward."
+      }
+    },
+    {
+      "atMs": 305460,
+      "type": "caption_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 305460,
+      "type": "participant_speaking_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 305620,
+      "type": "participant_speaking_started",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 305620,
+      "type": "caption_started",
+      "participant": "ROOT",
+      "caption": {
+        "en": "Separate the observable failure from the proposed explanation."
+      }
+    },
+    {
+      "atMs": 308980,
+      "type": "caption_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 308980,
+      "type": "participant_speaking_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 309140,
+      "type": "participant_speaking_started",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 309140,
+      "type": "caption_started",
+      "participant": "ROOT",
+      "caption": {
+        "en": "Document the conditions under which the behavior is reproducible, and leave everything else unconfirmed."
+      }
+    },
+    {
+      "atMs": 314600,
+      "type": "caption_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 314600,
+      "type": "participant_speaking_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 314950,
+      "type": "participant_speaking_started",
+      "participant": "SPECTER",
+      "audioAssetId": "S001-U058"
+    },
+    {
+      "atMs": 314950,
+      "type": "caption_started",
+      "participant": "SPECTER",
+      "caption": {
+        "en": "There's one comparison I'd like to make."
+      }
+    },
+    {
+      "atMs": 318250,
+      "type": "caption_ended",
+      "participant": "SPECTER"
+    },
+    {
+      "atMs": 318250,
+      "type": "participant_speaking_ended",
+      "participant": "SPECTER"
+    },
+    {
+      "atMs": 318410,
+      "type": "participant_speaking_started",
+      "participant": "SPECTER",
+      "audioAssetId": "S001-U059"
+    },
+    {
+      "atMs": 318410,
+      "type": "caption_started",
+      "participant": "SPECTER",
+      "caption": {
+        "en": "On the WebKit side, we've spent years examining how complex state transitions create unexpected memory-safety failures."
+      }
+    },
+    {
+      "atMs": 327260,
+      "type": "caption_ended",
+      "participant": "SPECTER"
+    },
+    {
+      "atMs": 327260,
+      "type": "participant_speaking_ended",
+      "participant": "SPECTER"
+    },
+    {
+      "atMs": 327420,
+      "type": "participant_speaking_started",
+      "participant": "SPECTER",
+      "audioAssetId": "S001-U060"
+    },
+    {
+      "atMs": 327420,
+      "type": "caption_started",
+      "participant": "SPECTER",
+      "caption": {
+        "en": "Browser engines and Bluetooth services are very different systems."
+      }
+    },
+    {
+      "atMs": 332320,
+      "type": "caption_ended",
+      "participant": "SPECTER"
+    },
+    {
+      "atMs": 332320,
+      "type": "participant_speaking_ended",
+      "participant": "SPECTER"
+    },
+    {
+      "atMs": 332480,
+      "type": "participant_speaking_started",
+      "participant": "SPECTER",
+      "audioAssetId": "S001-U061"
+    },
+    {
+      "atMs": 332480,
+      "type": "caption_started",
+      "participant": "SPECTER",
+      "caption": {
+        "en": "But the methodology is transferable."
+      }
+    },
+    {
+      "atMs": 335480,
+      "type": "caption_ended",
+      "participant": "SPECTER"
+    },
+    {
+      "atMs": 335480,
+      "type": "participant_speaking_ended",
+      "participant": "SPECTER"
+    },
+    {
+      "atMs": 335830,
+      "type": "participant_speaking_started",
+      "participant": "ORACLE",
+      "audioAssetId": "S001-U062"
+    },
+    {
+      "atMs": 335830,
+      "type": "caption_started",
+      "participant": "ORACLE",
+      "caption": {
+        "en": "Go on."
+      }
+    },
+    {
+      "atMs": 336780,
+      "type": "caption_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 336780,
+      "type": "participant_speaking_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 337130,
+      "type": "participant_speaking_started",
+      "participant": "SPECTER",
+      "audioAssetId": "S001-U063"
+    },
+    {
+      "atMs": 337130,
+      "type": "caption_started",
+      "participant": "SPECTER",
+      "caption": {
+        "en": "Don't begin by assuming the exploit."
+      }
+    },
+    {
+      "atMs": 340430,
+      "type": "caption_ended",
+      "participant": "SPECTER"
+    },
+    {
+      "atMs": 340430,
+      "type": "participant_speaking_ended",
+      "participant": "SPECTER"
+    },
+    {
+      "atMs": 340590,
+      "type": "participant_speaking_started",
+      "participant": "SPECTER",
+      "audioAssetId": "S001-U064"
+    },
+    {
+      "atMs": 340590,
+      "type": "caption_started",
+      "participant": "SPECTER",
+      "caption": {
+        "en": "I'd start with the state machine."
+      }
+    },
+    {
+      "atMs": 343740,
+      "type": "caption_ended",
+      "participant": "SPECTER"
+    },
+    {
+      "atMs": 343740,
+      "type": "participant_speaking_ended",
+      "participant": "SPECTER"
+    },
+    {
+      "atMs": 343900,
+      "type": "participant_speaking_started",
+      "participant": "SPECTER",
+      "audioAssetId": "S001-U065"
+    },
+    {
+      "atMs": 343900,
+      "type": "caption_started",
+      "participant": "SPECTER",
+      "caption": {
+        "en": "Identify which transitions are permitted, which transitions are forbidden, and whether the implementation preserves those constraints."
+      }
+    },
+    {
+      "atMs": 351460,
+      "type": "participant_speaking_started",
+      "participant": "ZERO",
+      "audioAssetId": "S001-U066"
+    },
+    {
+      "atMs": 351460,
+      "type": "caption_started",
+      "participant": "ZERO",
+      "caption": {
+        "en": "Yeah, same question with pointer authentication."
+      }
+    },
+    {
+      "atMs": 351640,
+      "type": "caption_ended",
+      "participant": "SPECTER"
+    },
+    {
+      "atMs": 351640,
+      "type": "participant_speaking_ended",
+      "participant": "SPECTER"
+    },
+    {
+      "atMs": 354760,
+      "type": "caption_ended",
+      "participant": "ZERO"
+    },
+    {
+      "atMs": 354760,
+      "type": "participant_speaking_ended",
+      "participant": "ZERO"
+    },
+    {
+      "atMs": 354920,
+      "type": "participant_speaking_started",
+      "participant": "ZERO",
+      "audioAssetId": "S001-U067"
+    },
+    {
+      "atMs": 354920,
+      "type": "caption_started",
+      "participant": "ZERO",
+      "caption": {
+        "en": "PAC helps. It doesn't tell you the ownership decision was right."
+      }
+    },
+    {
+      "atMs": 359920,
+      "type": "caption_ended",
+      "participant": "ZERO"
+    },
+    {
+      "atMs": 359920,
+      "type": "participant_speaking_ended",
+      "participant": "ZERO"
+    },
+    {
+      "atMs": 360080,
+      "type": "participant_speaking_started",
+      "participant": "ZERO",
+      "audioAssetId": "S001-U068"
+    },
+    {
+      "atMs": 360080,
+      "type": "caption_started",
+      "participant": "ZERO",
+      "caption": {
+        "en": "If the system makes an invalid ownership decision, an authenticated pointer doesn't make that decision safe."
+      }
+    },
+    {
+      "atMs": 369030,
+      "type": "caption_ended",
+      "participant": "ZERO"
+    },
+    {
+      "atMs": 369030,
+      "type": "participant_speaking_ended",
+      "participant": "ZERO"
+    },
+    {
+      "atMs": 369380,
+      "type": "participant_speaking_started",
+      "participant": "GHOST",
+      "audioAssetId": "S001-U069"
+    },
+    {
+      "atMs": 369380,
+      "type": "caption_started",
+      "participant": "GHOST",
+      "caption": {
+        "en": "Bluetooth has another piece to it, though."
+      }
+    },
+    {
+      "atMs": 371730,
+      "type": "caption_ended",
+      "participant": "GHOST"
+    },
+    {
+      "atMs": 371730,
+      "type": "participant_speaking_ended",
+      "participant": "GHOST"
+    },
+    {
+      "atMs": 371890,
+      "type": "participant_speaking_started",
+      "participant": "GHOST",
+      "audioAssetId": "S001-U070"
+    },
+    {
+      "atMs": 371890,
+      "type": "caption_started",
+      "participant": "GHOST",
+      "caption": {
+        "en": "External input, pairing state, authentication restrictions, and privileged processing can all be involved."
+      }
+    },
+    {
+      "atMs": 379490,
+      "type": "caption_ended",
+      "participant": "GHOST"
+    },
+    {
+      "atMs": 379490,
+      "type": "participant_speaking_ended",
+      "participant": "GHOST"
+    },
+    {
+      "atMs": 379650,
+      "type": "participant_speaking_started",
+      "participant": "GHOST",
+      "audioAssetId": "S001-U071"
+    },
+    {
+      "atMs": 379650,
+      "type": "caption_started",
+      "participant": "GHOST",
+      "caption": {
+        "en": "But we need to know which component actually crosses the trust boundary."
+      }
+    },
+    {
+      "atMs": 383750,
+      "type": "caption_ended",
+      "participant": "GHOST"
+    },
+    {
+      "atMs": 383750,
+      "type": "participant_speaking_ended",
+      "participant": "GHOST"
+    },
+    {
+      "atMs": 384100,
+      "type": "participant_speaking_started",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 384100,
+      "type": "caption_started",
+      "participant": "ROOT",
+      "caption": {
+        "en": "That's the distinction I want preserved in the final analysis."
+      }
+    },
+    {
+      "atMs": 388160,
+      "type": "caption_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 388160,
+      "type": "participant_speaking_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 388320,
+      "type": "participant_speaking_started",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 388320,
+      "type": "caption_started",
+      "participant": "ROOT",
+      "caption": {
+        "en": "An externally reachable vulnerability is not automatically a remote code execution primitive."
+      }
+    },
+    {
+      "atMs": 393080,
+      "type": "caption_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 393080,
+      "type": "participant_speaking_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 393240,
+      "type": "participant_speaking_started",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 393240,
+      "type": "caption_started",
+      "participant": "ROOT",
+      "caption": {
+        "en": "A memory-corruption condition is not automatically an exploitable chain."
+      }
+    },
+    {
+      "atMs": 396950,
+      "type": "caption_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 396950,
+      "type": "participant_speaking_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 397110,
+      "type": "participant_speaking_started",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 397110,
+      "type": "caption_started",
+      "participant": "ROOT",
+      "caption": {
+        "en": "And an exploitable condition is not evidence that exploitation has occurred."
+      }
+    },
+    {
+      "atMs": 401520,
+      "type": "caption_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 401520,
+      "type": "participant_speaking_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 401870,
+      "type": "participant_speaking_started",
+      "participant": "ORACLE",
+      "audioAssetId": "S001-U076"
+    },
+    {
+      "atMs": 401870,
+      "type": "caption_started",
+      "participant": "ORACLE",
+      "caption": {
+        "en": "Right."
+      }
+    },
+    {
+      "atMs": 402420,
+      "type": "caption_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 402420,
+      "type": "participant_speaking_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 402580,
+      "type": "participant_speaking_started",
+      "participant": "ORACLE",
+      "audioAssetId": "S001-U077"
+    },
+    {
+      "atMs": 402580,
+      "type": "caption_started",
+      "participant": "ORACLE",
+      "caption": {
+        "en": "It's easy to make the pieces sound like they fit."
+      }
+    },
+    {
+      "atMs": 405380,
+      "type": "caption_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 405380,
+      "type": "participant_speaking_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 405540,
+      "type": "participant_speaking_started",
+      "participant": "ORACLE",
+      "audioAssetId": "S001-U078"
+    },
+    {
+      "atMs": 405540,
+      "type": "caption_started",
+      "participant": "ORACLE",
+      "caption": {
+        "en": "We're here to establish what actually happened."
+      }
+    },
+    {
+      "atMs": 408440,
+      "type": "caption_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 408440,
+      "type": "participant_speaking_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 410440,
+      "type": "participant_speaking_started",
+      "participant": "ZERO",
+      "audioAssetId": "S001-U079"
+    },
+    {
+      "atMs": 410440,
+      "type": "caption_started",
+      "participant": "ZERO",
+      "caption": {
+        "en": "Then we'll need someone to check it independently."
+      }
+    },
+    {
+      "atMs": 414190,
+      "type": "caption_ended",
+      "participant": "ZERO"
+    },
+    {
+      "atMs": 414190,
+      "type": "participant_speaking_ended",
+      "participant": "ZERO"
+    },
+    {
+      "atMs": 414540,
+      "type": "participant_speaking_started",
+      "participant": "SPECTER",
+      "audioAssetId": "S001-U080"
+    },
+    {
+      "atMs": 414540,
+      "type": "caption_started",
+      "participant": "SPECTER",
+      "caption": {
+        "en": "And say where we ran out of evidence."
+      }
+    },
+    {
+      "atMs": 417190,
+      "type": "caption_ended",
+      "participant": "SPECTER"
+    },
+    {
+      "atMs": 417190,
+      "type": "participant_speaking_ended",
+      "participant": "SPECTER"
+    },
+    {
+      "atMs": 417540,
+      "type": "participant_speaking_started",
+      "participant": "ORACLE",
+      "audioAssetId": "S001-U081"
+    },
+    {
+      "atMs": 417540,
+      "type": "caption_started",
+      "participant": "ORACLE",
+      "caption": {
+        "en": "All right. Three tracks. Keep them independent."
+      }
+    },
+    {
+      "atMs": 421840,
+      "type": "caption_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 421840,
+      "type": "participant_speaking_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 422000,
+      "type": "participant_speaking_started",
+      "participant": "ORACLE",
+      "audioAssetId": "S001-U082"
+    },
+    {
+      "atMs": 422000,
+      "type": "caption_started",
+      "participant": "ORACLE",
+      "caption": {
+        "en": "Ghost, focus on the Bluetooth and CoreUtils disclosures. Establish the documented behavior and identify the unresolved questions."
+      }
+    },
+    {
+      "atMs": 430500,
+      "type": "caption_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 430500,
+      "type": "participant_speaking_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 430660,
+      "type": "participant_speaking_started",
+      "participant": "ORACLE",
+      "audioAssetId": "S001-U083"
+    },
+    {
+      "atMs": 430660,
+      "type": "caption_started",
+      "participant": "ORACLE",
+      "caption": {
+        "en": "Zero, examine the ARM64 memory-safety implications. I want the pointer authentication assumptions separated from the object-lifetime assumptions."
+      }
+    },
+    {
+      "atMs": 440710,
+      "type": "caption_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 440710,
+      "type": "participant_speaking_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 440870,
+      "type": "participant_speaking_started",
+      "participant": "ORACLE",
+      "audioAssetId": "S001-U084"
+    },
+    {
+      "atMs": 440870,
+      "type": "caption_started",
+      "participant": "ORACLE",
+      "caption": {
+        "en": "Specter, prepare the WebKit comparison. Methodology only. No implied connection without evidence."
+      }
+    },
+    {
+      "atMs": 448470,
+      "type": "caption_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 448470,
+      "type": "participant_speaking_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 448820,
+      "type": "participant_speaking_started",
+      "participant": "GHOST",
+      "audioAssetId": "S001-U085"
+    },
+    {
+      "atMs": 448820,
+      "type": "caption_started",
+      "participant": "GHOST",
+      "caption": {
+        "en": "Yep. I'll take that."
+      }
+    },
+    {
+      "atMs": 450570,
+      "type": "caption_ended",
+      "participant": "GHOST"
+    },
+    {
+      "atMs": 450570,
+      "type": "participant_speaking_ended",
+      "participant": "GHOST"
+    },
+    {
+      "atMs": 450920,
+      "type": "participant_speaking_started",
+      "participant": "ZERO",
+      "audioAssetId": "S001-U086"
+    },
+    {
+      "atMs": 450920,
+      "type": "caption_started",
+      "participant": "ZERO",
+      "caption": {
+        "en": "I'll write down what has to hold, and what would make me change my mind."
+      }
+    },
+    {
+      "atMs": 456870,
+      "type": "caption_ended",
+      "participant": "ZERO"
+    },
+    {
+      "atMs": 456870,
+      "type": "participant_speaking_ended",
+      "participant": "ZERO"
+    },
+    {
+      "atMs": 457220,
+      "type": "participant_speaking_started",
+      "participant": "SPECTER",
+      "audioAssetId": "S001-U087"
+    },
+    {
+      "atMs": 457220,
+      "type": "caption_started",
+      "participant": "SPECTER",
+      "caption": {
+        "en": "I'll keep the browser comparison separate."
+      }
+    },
+    {
+      "atMs": 460620,
+      "type": "caption_ended",
+      "participant": "SPECTER"
+    },
+    {
+      "atMs": 460620,
+      "type": "participant_speaking_ended",
+      "participant": "SPECTER"
+    },
+    {
+      "atMs": 460970,
+      "type": "participant_speaking_started",
+      "participant": "ORACLE",
+      "audioAssetId": "S001-U088"
+    },
+    {
+      "atMs": 460970,
+      "type": "caption_started",
+      "participant": "ORACLE",
+      "caption": {
+        "en": "Root, consolidate the findings."
+      }
+    },
+    {
+      "atMs": 465120,
+      "type": "caption_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 465120,
+      "type": "participant_speaking_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 465280,
+      "type": "participant_speaking_started",
+      "participant": "ORACLE",
+      "audioAssetId": "S001-U089"
+    },
+    {
+      "atMs": 465280,
+      "type": "caption_started",
+      "participant": "ORACLE",
+      "caption": {
+        "en": "No inferred dependencies. No unsupported vulnerability chains."
+      }
+    },
+    {
+      "atMs": 470180,
+      "type": "caption_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 470180,
+      "type": "participant_speaking_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 470340,
+      "type": "participant_speaking_started",
+      "participant": "ORACLE",
+      "audioAssetId": "S001-U090"
+    },
+    {
+      "atMs": 470340,
+      "type": "caption_started",
+      "participant": "ORACLE",
+      "caption": {
+        "en": "If something cannot be demonstrated, mark it as unconfirmed."
+      }
+    },
+    {
+      "atMs": 474390,
+      "type": "caption_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 474390,
+      "type": "participant_speaking_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 474740,
+      "type": "participant_speaking_started",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 474740,
+      "type": "caption_started",
+      "participant": "ROOT",
+      "caption": {
+        "en": "Understood."
+      }
+    },
+    {
+      "atMs": 476105,
+      "type": "caption_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 476105,
+      "type": "participant_speaking_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 476265,
+      "type": "participant_speaking_started",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 476265,
+      "type": "caption_started",
+      "participant": "ROOT",
+      "caption": {
+        "en": "I'll separate verified observations, working hypotheses, and unresolved contradictions."
+      }
+    },
+    {
+      "atMs": 479975,
+      "type": "caption_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 479975,
+      "type": "participant_speaking_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 480135,
+      "type": "participant_speaking_started",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 480135,
+      "type": "caption_started",
+      "participant": "ROOT",
+      "caption": {
+        "en": "Anything without reproducible evidence stays outside the conclusions."
+      }
+    },
+    {
+      "atMs": 483495,
+      "type": "caption_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 483495,
+      "type": "participant_speaking_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 483845,
+      "type": "participant_speaking_started",
+      "participant": "ORACLE",
+      "audioAssetId": "S001-U094"
+    },
+    {
+      "atMs": 483845,
+      "type": "caption_started",
+      "participant": "ORACLE",
+      "caption": {
+        "en": "Okay. Good."
+      }
+    },
+    {
+      "atMs": 486395,
+      "type": "caption_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 486395,
+      "type": "participant_speaking_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 486555,
+      "type": "participant_speaking_started",
+      "participant": "ORACLE",
+      "audioAssetId": "S001-U095"
+    },
+    {
+      "atMs": 486555,
+      "type": "caption_started",
+      "participant": "ORACLE",
+      "caption": {
+        "en": "We reconvene when there's something worth examining."
+      }
+    },
+    {
+      "atMs": 489805,
+      "type": "caption_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 489805,
+      "type": "participant_speaking_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 489965,
+      "type": "participant_speaking_started",
+      "participant": "ORACLE",
+      "audioAssetId": "S001-U096"
+    },
+    {
+      "atMs": 489965,
+      "type": "caption_started",
+      "participant": "ORACLE",
+      "caption": {
+        "en": "Until then, maintain separation between the research tracks."
+      }
+    },
+    {
+      "atMs": 493965,
+      "type": "caption_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 493965,
+      "type": "participant_speaking_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 494315,
+      "type": "participant_speaking_started",
+      "participant": "GHOST",
+      "audioAssetId": "S001-U097"
+    },
+    {
+      "atMs": 494315,
+      "type": "caption_started",
+      "participant": "GHOST",
+      "caption": {
+        "en": "Got it."
+      }
+    },
+    {
+      "atMs": 495115,
+      "type": "caption_ended",
+      "participant": "GHOST"
+    },
+    {
+      "atMs": 495115,
+      "type": "participant_speaking_ended",
+      "participant": "GHOST"
+    },
+    {
+      "atMs": 496831,
+      "type": "participant_speaking_started",
+      "participant": "ZERO",
+      "audioAssetId": "S001-U098"
+    },
+    {
+      "atMs": 496831,
+      "type": "caption_started",
+      "participant": "ZERO",
+      "caption": {
+        "en": "Yep."
+      }
+    },
+    {
+      "atMs": 498131,
+      "type": "caption_ended",
+      "participant": "ZERO"
+    },
+    {
+      "atMs": 498131,
+      "type": "participant_speaking_ended",
+      "participant": "ZERO"
+    },
+    {
+      "atMs": 499847,
+      "type": "participant_speaking_started",
+      "participant": "SPECTER",
+      "audioAssetId": "S001-U099"
+    },
+    {
+      "atMs": 499847,
+      "type": "caption_started",
+      "participant": "SPECTER",
+      "caption": {
+        "en": "I'll have the comparison ready."
+      }
+    },
+    {
+      "atMs": 502247,
+      "type": "caption_ended",
+      "participant": "SPECTER"
+    },
+    {
+      "atMs": 502247,
+      "type": "participant_speaking_ended",
+      "participant": "SPECTER"
+    },
+    {
+      "atMs": 503963,
+      "type": "participant_speaking_started",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 503963,
+      "type": "caption_started",
+      "participant": "ROOT",
+      "caption": {
+        "en": "No further observations."
+      }
+    },
+    {
+      "atMs": 505573,
+      "type": "caption_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 505573,
+      "type": "participant_speaking_ended",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 507289,
+      "type": "participant_speaking_started",
+      "participant": "ORACLE",
+      "audioAssetId": "S001-U101"
+    },
+    {
+      "atMs": 507289,
+      "type": "caption_started",
+      "participant": "ORACLE",
+      "caption": {
+        "en": "All right. That's enough for tonight."
+      }
+    },
+    {
+      "atMs": 509539,
+      "type": "caption_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 509539,
+      "type": "participant_speaking_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 509699,
+      "type": "participant_speaking_started",
+      "participant": "ORACLE",
+      "audioAssetId": "S001-U102"
+    },
+    {
+      "atMs": 509699,
+      "type": "caption_started",
+      "participant": "ORACLE",
+      "caption": {
+        "en": "WISEMAN out."
+      }
+    },
+    {
+      "atMs": 511099,
+      "type": "caption_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 511099,
+      "type": "participant_speaking_ended",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 515015,
+      "type": "participant_left",
+      "participant": "SPECTER"
+    },
+    {
+      "atMs": 515965,
+      "type": "participant_left",
+      "participant": "ZERO"
+    },
+    {
+      "atMs": 516915,
+      "type": "participant_left",
+      "participant": "GHOST"
+    },
+    {
+      "atMs": 517865,
+      "type": "participant_left",
+      "participant": "ROOT"
+    },
+    {
+      "atMs": 518815,
+      "type": "participant_left",
+      "participant": "ORACLE"
+    },
+    {
+      "atMs": 519765,
+      "type": "session_ended"
+    }
+  ]
+}

@@ -74,4 +74,17 @@ describe('Phase 1 scenario', () => {
       }
     }
   })
+
+  it('reveals production captions from the playback timestamp and shows ROOT immediately', () => {
+    const production = { ...scenario, presentation: 'session-001' as const }
+    const captionAt = (time: number, name: string) =>
+      frameAt(production, time).participants.find(participant => participant.name === name)?.caption
+    expect(captionAt(1049, 'ORACLE')).toBeUndefined()
+    expect(captionAt(1050, 'ORACLE')?.en).toBe('E')
+    expect(captionAt(1088, 'ORACLE')?.en).toBe('Ev')
+    expect(captionAt(5799, 'ORACLE')).toEqual(stateAt(production, 5799).participants[0].caption)
+    expect(captionAt(5800, 'ORACLE')).toBeUndefined()
+    expect(captionAt(1050, 'ORACLE')?.en).toBe('E')
+    expect(captionAt(23000, 'ROOT')?.en).toBe("Agreed. We'll meet again at the same time.")
+  })
 })
