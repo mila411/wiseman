@@ -43,12 +43,32 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--green); out
 .connection { justify-self: end; color: var(--green); }
 .connection.disconnected { color: #e28d90; }
 i { width: .52em; height: .52em; border-radius: 50%; background: currentColor; display: inline-block; }
-.session { width: min(82%, 1500px); margin: auto; text-align: center; }
+.session { --session-width: min(82cqw, 1500px); width: var(--session-width); margin: auto; text-align: center; }
 h1 { margin: 0; font-size: clamp(20px, 2.3cqw, 44px); font-weight: 550; line-height: 1.2; letter-spacing: .025em; }
 .session > p { margin: 1.2em 0 0; color: var(--muted); font-size: clamp(13px, 1.02cqw, 20px); }
 .session > p span { margin-inline: .23em; }
-.participants { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 1.03cqw; margin-top: clamp(24px, 3.4cqw, 65px); }
+.participants {
+  --card-gap: 1.03cqw;
+  --card-width: calc((var(--session-width) - 4 * var(--card-gap)) / 5);
+  --roster-transition: 300ms;
+  display: grid;
+  justify-content: center;
+  width: calc(100% + var(--card-gap));
+  margin: clamp(24px, 3.4cqw, 65px) calc(var(--card-gap) / -2) 0;
+  padding: 0;
+  list-style: none;
+  transition: grid-template-columns var(--roster-transition) ease;
+}
+.participant-slot {
+  display: flex;
+  justify-content: center;
+  min-width: 0;
+  overflow: hidden;
+  transition: opacity var(--roster-transition) ease;
+}
+.participant-slot[aria-hidden="true"] { opacity: 0; }
 .participant {
+  flex: 0 0 var(--card-width);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -106,7 +126,7 @@ h2 { margin: 1em 0 .45em; font: 600 clamp(10px, 1.04cqw, 20px) var(--mono); lett
 .call-controls .hangup:hover:enabled { background: #71333b; }
 .call-controls .hangup:disabled { opacity: .45; }
 @media (max-width: 650px) {
-  .session { width: 97%; }
+  .session { --session-width: 97cqw; }
   .top, .bottom { padding-inline: 2cqw; letter-spacing: 0; }
   .bottom { grid-template-columns: auto auto auto; gap: 6px; }
   .participant { padding-inline: 1px; border-radius: 5px; }
@@ -136,7 +156,6 @@ h2 { margin: 1em 0 .45em; font: 600 clamp(10px, 1.04cqw, 20px) var(--mono); lett
   color: #d1d9e0;
   white-space: nowrap;
 }
-.participants { padding: 0; margin-bottom: 0; list-style: none; }
 .participant-status { justify-content: center; }
 .waveform { flex: none; }
 .caption-slot {
@@ -169,9 +188,16 @@ h2 { margin: 1em 0 .45em; font: 600 clamp(10px, 1.04cqw, 20px) var(--mono); lett
   color: var(--muted);
   text-align: center;
   font: clamp(11px, .85cqw, 16px) var(--mono);
+  animation: show-termination 300ms step-end;
 }
+@keyframes show-termination { from { opacity: 0; } to { opacity: 1; } }
 .termination p { margin: .3em 0; }
 .conference > .session { grid-area: 2 / 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .participants { --roster-transition: 0ms; }
+  .termination { animation: none; }
+}
 
 @media (max-width: 450px) {
   .private { flex-wrap: wrap; gap: .35em; }

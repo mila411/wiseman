@@ -30,7 +30,7 @@ const meetingTitle = 'WISEMAN - Regarding the Latest iOS Vulnerability'
 
 function Participant({ participant }: { participant: Frame['participants'][number] }) {
   const { name, connected, waveform } = participant
-  return <li className={waveform ? 'participant speaking' : 'participant'}>
+  return <div className={waveform ? 'participant speaking' : 'participant'}>
     <Avatar />
     <h2>{name}</h2>
     <span className="participant-status"><i />{waveform ? 'Speaking' : connected ? 'Connected' : 'Disconnected'}</span>
@@ -39,7 +39,7 @@ function Participant({ participant }: { participant: Frame['participants'][numbe
         ? waveform.map((height, index) => <rect key={index} x={index * 4 + 1} y={(40 - height) / 2} width="2" height={height} rx="1"/>)
         : <path d={`M1 20H${waveformBars * 4 - 1}`}/>}
     </svg>
-  </li>
+  </div>
 }
 
 const exampleNetworks = ['192.0.2', '198.51.100', '203.0.113']
@@ -105,8 +105,10 @@ function Conference({ frame, sessionId, presentation, disconnect, playback }: {
     <span className="service-name"><span aria-hidden="true">🧅</span> NULL LINE</span>
     <button className="heading-control" type="button" aria-label="PRIVATE SESSION — Restart" onClick={playback.restart}>{privateLabel}</button>
   </div>
-  const summary = <p>Private voice session · {frame.participants.length} participants</p>
-  const connected = frame.participants.some(participant => participant.connected)
+  const connectedCount = frame.participants.filter(participant => participant.connected).length
+  const summary = <p>Private voice session · {connectedCount} {connectedCount === 1 ? 'participant' : 'participants'}</p>
+  const connected = connectedCount > 0
+  const participantColumns = frame.participants.map(participant => participant.connected ? '20%' : '0%').join(' ')
   const sourceLive = !frame.ended && (!production || connected)
   return <main className={`conference${production && playback.running && frame.timeMs < 900 ? ' opening' : ''}`}>
     <header className="top">
@@ -121,8 +123,13 @@ function Conference({ frame, sessionId, presentation, disconnect, playback }: {
           disabled={playback.ended} onClick={playback.toggle}>{meetingTitle}</button>
       </h1>
       {summary}
-      <ul className="participants" aria-label="Conference participants">
-        {frame.participants.map(participant => <Participant key={participant.name} participant={participant}/>)}
+      <ul className="participants" aria-label="Conference participants" key={playback.version}
+          style={{ gridTemplateColumns: participantColumns }}>
+        {frame.participants.map(participant => (
+          <li className="participant-slot" key={participant.name} aria-hidden={!participant.connected}>
+            <Participant participant={participant}/>
+          </li>
+        ))}
       </ul>
       <div className="caption-slot">
         {frame.participants.map(({ name, caption }) => caption && (
