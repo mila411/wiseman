@@ -8,9 +8,10 @@ export interface Caption {
 
 type Event = { atMs: number } & (
   | { type: 'session_ended' }
+  | { type: 'participant_speaking_started'; participant: string; audioAssetId?: string }
   | { type: 'caption_started'; participant: string; caption: Caption }
   | {
-      type: 'participant_joined' | 'participant_speaking_started' |
+      type: 'participant_joined' | 'participant_left' |
         'participant_speaking_ended' | 'caption_ended'
       participant: string
     }
@@ -22,6 +23,7 @@ export interface Scenario {
   durationMs: number
   participants: string[]
   events: Event[]
+  presentation?: 'session-001'
 }
 
 export const scenario = data as Scenario
@@ -30,7 +32,7 @@ export function stateAt(scenario: Scenario, playbackMs: number) {
   const timeMs = Math.max(0, Math.min(playbackMs, scenario.durationMs))
   const connected = new Set<string>()
   const speaking = new Map<string, number>()
-  const captions = new Map<string, Caption>()
+  const captions = new Map<string, { text: Caption; startedAt: number }>()
   let ended = false
 
   for (const event of scenario.events) {
@@ -38,6 +40,11 @@ export function stateAt(scenario: Scenario, playbackMs: number) {
     switch (event.type) {
       case 'participant_joined':
         connected.add(event.participant)
+        break
+      case 'participant_left':
+        connected.delete(event.participant)
+        speaking.delete(event.participant)
+        captions.delete(event.participant)
         break
       case 'participant_speaking_started':
         if (connected.has(event.participant)) speaking.set(event.participant, event.atMs)
@@ -47,7 +54,7 @@ export function stateAt(scenario: Scenario, playbackMs: number) {
         captions.delete(event.participant)
         break
       case 'caption_started':
-        captions.set(event.participant, event.caption)
+        captions.set(event.participant, { text: event.caption, startedAt: event.atMs })
         break
       case 'caption_ended':
         captions.delete(event.participant)
@@ -69,7 +76,8 @@ export function stateAt(scenario: Scenario, playbackMs: number) {
       name,
       connected: connected.has(name),
       speakingSince: speaking.get(name),
-      caption: speaking.has(name) ? captions.get(name) : undefined,
+      caption: speaking.has(name) ? captions.get(name)?.text : undefined,
+      captionStartedAt: speaking.has(name) ? captions.get(name)?.startedAt : undefined,
     })),
   }
 }

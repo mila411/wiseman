@@ -1,3 +1,12 @@
 node_modules/
 dist/
 .npm-cache/
+/production/session-001/
+/production/session-001-performance-trial/
+/production/session-001-performance/*
+!/production/session-001-performance/scenario.json
+!/production/session-001-performance/cues.json
+!/production/session-001-performance/audio-foundry/
+/production/session-001-performance/audio-foundry/*
+!/production/session-001-performance/audio-foundry/*.wav
+/production/archive/

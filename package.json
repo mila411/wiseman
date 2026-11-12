@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "test": "vitest run",
-    "build": "tsc --noEmit && vite build"
+    "build": "tsc --noEmit && vite build",
+    "export:preview": "node scripts/export-preview.mjs",
+    "session:001": "node scripts/session-001.mjs"
   },
   "dependencies": {
     "react": "^19.1.0",

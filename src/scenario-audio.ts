@@ -1,0 +1,169 @@
+import { stateAt, type Scenario } from './timeline'
+import { waveformBars } from './waveform'
+
+export type AudioAsset = {
+  buffer: AudioBuffer
+  peaks: Float32Array
+  activity: Uint32Array
+}
+export type AudioAssets = ReadonlyMap<string, AudioAsset>
+const bucketMs = 5
+const activityWindowMs = 20
+
+export function analyzeAudio(buffer: AudioBuffer): AudioAsset {
+  const bucketSize = Math.max(1, Math.round(buffer.sampleRate * bucketMs / 1000))
+  const peaks = new Float32Array(Math.ceil(buffer.length / bucketSize))
+  const windowSize = Math.max(1, Math.round(buffer.sampleRate * activityWindowMs / 1000))
+  const energy = new Float64Array(Math.ceil(buffer.length / windowSize))
+  for (let channel = 0; channel < buffer.numberOfChannels; channel++) {
+    const samples = buffer.getChannelData(channel)
+    for (let i = 0; i < samples.length; i++) {
+      const bucket = Math.floor(i / bucketSize)
+      peaks[bucket] = Math.max(peaks[bucket], Math.abs(samples[i]))
+      energy[Math.floor(i / windowSize)] += samples[i] ** 2
+    }
+  }
+  const rms = energy.map(sum => Math.sqrt(sum / (windowSize * buffer.numberOfChannels)))
+  const threshold = Math.max(0.009, rms.reduce((peak, value) => Math.max(peak, value), 0) * 0.06)
+  const activity = new Uint32Array(rms.length + 1)
+  for (let index = 0; index < rms.length;) {
+    const start = index++
+    if (rms[start] >= threshold) {
+      while (rms[index] >= threshold) index++
+    }
+    const voiced = index - start >= 3
+    for (let window = start; window < index; window++) {
+      activity[window + 1] = activity[window] + Number(voiced)
+    }
+  }
+  return { buffer, peaks, activity }
+}
+
+export function captionAudioProgress(asset: AudioAsset, offsetMs: number, startMs: number, endMs: number) {
+  const { activity, buffer } = asset
+  const windowMs = Math.round(buffer.sampleRate * activityWindowMs / 1000) * 1000 / buffer.sampleRate
+  const at = (ms: number) => activity[Math.max(0, Math.min(activity.length - 1, Math.floor(ms / windowMs)))]
+  const start = at(startMs)
+  const delay = Math.min(80, (endMs - startMs) / 4)
+  const elapsed = at(offsetMs - delay) - start
+  if (elapsed <= 0) return undefined
+  const total = Math.max(elapsed, at(endMs - delay - windowMs) - start)
+  return elapsed / total
+}
+
+export function assetAt(assets: AudioAssets, name: string, startMs: number) {
+  if (name.toUpperCase() === 'ROOT') return undefined
+  return assets.get(`${name.toUpperCase()}-${startMs}`) ?? assets.get(name.toUpperCase())
+}
+
+export function audioWaveform(asset: AudioAsset, offsetMs: number) {
+  const bucketSize = Math.max(1, Math.round(asset.buffer.sampleRate * bucketMs / 1000))
+  const center = Math.floor(offsetMs * asset.buffer.sampleRate / 1000 / bucketSize)
+  return Array.from({ length: waveformBars }, (_, index) => {
+    const peak = asset.peaks[center + index - waveformBars + 1] ?? 0
+    return 2 + 36 * Math.min(1, peak)
+  })
+}
+
+export async function importAudio(context: BaseAudioContext, scenario: Scenario, files: readonly File[]) {
+  const allowed = new Set(scenario.participants.filter(name => name.toUpperCase() !== 'ROOT').map(name => name.toUpperCase()))
+  const aliases = new Map<string, string[]>()
+  for (const event of scenario.events) {
+    if (event.type === 'participant_speaking_started' && allowed.has(event.participant.toUpperCase())) {
+      const cueKey = `${event.participant.toUpperCase()}-${event.atMs}`
+      allowed.add(cueKey)
+      if (event.audioAssetId) {
+        const keys = aliases.get(event.audioAssetId) ?? []
+        keys.push(cueKey)
+        aliases.set(event.audioAssetId, keys)
+      }
+    }
+  }
+  const assets = new Map<string, AudioAsset>()
+  for (const file of files) {
+    const key = file.name.replace(/\.[^.]+$/, '').toUpperCase()
+    if (key === 'ROOT' || key.startsWith('ROOT-')) continue
+    const cueKeys = aliases.get(key) ?? [key]
+    if (!cueKeys.every(cueKey => allowed.has(cueKey))) throw new Error(`Unknown audio cue: ${file.name}`)
+    if (cueKeys.some(cueKey => assets.has(cueKey))) throw new Error(`Duplicate audio cue: ${file.name}`)
+    try {
+      const buffer = await context.decodeAudioData(await file.arrayBuffer())
+      const asset = analyzeAudio(buffer)
+      for (const cueKey of cueKeys) assets.set(cueKey, asset)
+    } catch {
+      throw new Error(`Could not decode ${file.name}`)
+    }
+  }
+  return assets
+}
+
+export function scheduleAudio(
+  context: BaseAudioContext,
+  scenario: Scenario,
+  assets: AudioAssets,
+  fromMs: number,
+  untilMs: number,
+  anchor: number,
+) {
+  const end = Math.min(untilMs, scenario.durationMs)
+  const boundaries = [...new Set([
+    fromMs,
+    ...scenario.events.flatMap(event =>
+      event.atMs > fromMs && event.atMs < end &&
+      (event.type === 'participant_speaking_started' || event.type === 'participant_speaking_ended' ||
+        event.type === 'session_ended' || event.type === 'participant_joined' ||
+        event.type === 'participant_left') ? [event.atMs] : []),
+    end,
+  ])].sort((a, b) => a - b)
+  const sources: AudioBufferSourceNode[] = []
+  const connection = scenario.presentation === 'session-001'
+    ? scenario.events.find(event => event.type === 'participant_joined')?.atMs
+    : undefined
+  let chime: OscillatorNode | undefined
+  let volume: GainNode | undefined
+  if (connection !== undefined && connection >= fromMs && connection < end) {
+    const at = anchor + (connection - fromMs) / 1000
+    chime = context.createOscillator()
+    volume = context.createGain()
+    chime.frequency.value = 660
+    volume.gain.setValueAtTime(0, at)
+    volume.gain.linearRampToValueAtTime(.045, at + .025)
+    volume.gain.linearRampToValueAtTime(0, at + .15)
+    chime.connect(volume).connect(context.destination)
+    chime.start(at)
+    chime.stop(at + .16)
+  }
+  const intervals = new Map<string, { asset: AudioAsset; from: number; to: number; start: number }>()
+  for (let index = 0; index < boundaries.length - 1; index++) {
+    const from = boundaries[index]
+    const to = boundaries[index + 1]
+    for (const { name, speakingSince } of stateAt(scenario, from).participants) {
+      if (speakingSince === undefined) continue
+      const asset = assetAt(assets, name, speakingSince)
+      if (!asset) continue
+      const key = `${name}-${speakingSince}`
+      const interval = intervals.get(key)
+      if (interval) interval.to = to
+      else intervals.set(key, { asset, from, to, start: speakingSince })
+    }
+  }
+  for (const { asset, from, to, start } of intervals.values()) {
+    const offset = (from - start) / 1000
+    const length = Math.min((to - from) / 1000, asset.buffer.duration - offset)
+    if (length <= 0) continue
+    const source = context.createBufferSource()
+    source.buffer = asset.buffer
+    source.connect(context.destination)
+    source.start(anchor + (from - fromMs) / 1000, offset, length)
+    sources.push(source)
+  }
+  return () => {
+    chime?.stop()
+    chime?.disconnect()
+    volume?.disconnect()
+    sources.forEach(source => {
+      source.stop()
+      source.disconnect()
+    })
+  }
+}
